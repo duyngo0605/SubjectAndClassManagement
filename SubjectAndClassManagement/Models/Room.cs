@@ -4,18 +4,19 @@ namespace SubjectAndClassManagement.Models
 {
     public class Room
     {
-        // Existing properties
-
-        [Required]
+        [Key]
+        [StringLength(10)]
         public string RoomId { get; set; }
 
         [Required]
+        [StringLength(255)]
         public string RoomName { get; set; }
 
         [Required]
         public int RoomCapacity { get; set; }
 
-        [Required]
         public string BuildingName { get; set; }
+
+        public virtual ICollection<Class> Classes { get; set; }
     }
 }

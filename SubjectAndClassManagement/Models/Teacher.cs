@@ -4,21 +4,19 @@ namespace SubjectAndClassManagement.Models
 {
     public class Teacher
     {
-        // Existing properties
-
-        [Required]
+        [Key]
+        [StringLength(10)]
         public string TeacherId { get; set; }
 
         [Required]
+        [StringLength(255)]
         public string TeacherName { get; set; }
 
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        [Phone]
         public string PhoneNumber { get; set; }
+
+        public virtual ICollection<Class> Classes { get; set; }
     }
 
 }

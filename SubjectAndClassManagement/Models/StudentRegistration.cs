@@ -6,28 +6,28 @@ namespace SubjectAndClassManagement.Models
 {
     public class StudentRegistration
     {
-        // Existing properties
-
-        [Required]
+        [Key]
+        [StringLength(10)]
         public string RegistrationId { get; set; }
 
         [Required]
+        [StringLength(10)]
         public string StudentId { get; set; }
 
         [Required]
+        [StringLength(10)]
         public string ClassId { get; set; }
 
         [Required]
         public DateTime RegistrationDate { get; set; }
 
         [Required]
+        [StringLength(20)]
         public string Status { get; set; }
 
         public string Reason { get; set; }
 
         public virtual Student Student { get; set; }
-
-        [Required]
         public virtual Class Class { get; set; }
     }
 }

@@ -4,20 +4,19 @@ namespace SubjectAndClassManagement.Models
 {
     public class Student
     {
-        // Existing properties
-
-        [Required]
+        [Key]
+        [StringLength(10)]
         public string StudentId { get; set; }
 
         [Required]
+        [StringLength(255)]
         public string StudentName { get; set; }
 
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        [Phone]
         public string PhoneNumber { get; set; }
+
+        public virtual ICollection<StudentRegistration> Registrations { get; set; }
+        public virtual ICollection<TuitionPayment> Payments { get; set; }
     }
 }

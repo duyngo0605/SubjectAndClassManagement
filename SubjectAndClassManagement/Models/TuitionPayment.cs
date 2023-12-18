@@ -4,12 +4,12 @@ namespace SubjectAndClassManagement.Models
 {
     public class TuitionPayment
     {
-        // Existing properties
-
-        [Required]
+        [Key]
+        [StringLength(10)]
         public string PaymentId { get; set; }
 
         [Required]
+        [StringLength(10)]
         public string StudentId { get; set; }
 
         [Required]
@@ -33,7 +33,7 @@ namespace SubjectAndClassManagement.Models
         [Required]
         public decimal Debt { get; set; }
 
-        [Required]
         public virtual Student Student { get; set; }
+        public virtual ICollection<Subject> FeeSubjects { get; set; }
     }
 }
