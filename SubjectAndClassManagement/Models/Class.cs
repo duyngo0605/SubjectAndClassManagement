@@ -44,7 +44,6 @@ namespace SubjectAndClassManagement.Models
         public virtual Subject Subject { get; set; }
         public virtual Room Room { get; set; }
         public virtual Teacher Teacher { get; set; }
-        public virtual ICollection<StudentRegistration> Registrations { get; set; }
     }
 
 }

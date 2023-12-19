@@ -1,0 +1,69 @@
+﻿@model SubjectAndClassManagement.Models.TuitionPayment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>TuitionPayment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="payment_id" />
+            <div class="form-group">
+                <label asp-for="student_id" class="control-label"></label>
+                <select asp-for="student_id" class="form-control" asp-items="ViewBag.student_id"></select>
+                <span asp-validation-for="student_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="total_credits" class="control-label"></label>
+                <input asp-for="total_credits" class="form-control" />
+                <span asp-validation-for="total_credits" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="tuition_fee" class="control-label"></label>
+                <input asp-for="tuition_fee" class="form-control" />
+                <span asp-validation-for="tuition_fee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="amount_to_pay" class="control-label"></label>
+                <input asp-for="amount_to_pay" class="form-control" />
+                <span asp-validation-for="amount_to_pay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="amount_paid" class="control-label"></label>
+                <input asp-for="amount_paid" class="form-control" />
+                <span asp-validation-for="amount_paid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="payment_time" class="control-label"></label>
+                <input asp-for="payment_time" class="form-control" />
+                <span asp-validation-for="payment_time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="excess_money" class="control-label"></label>
+                <input asp-for="excess_money" class="form-control" />
+                <span asp-validation-for="excess_money" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="debt" class="control-label"></label>
+                <input asp-for="debt" class="form-control" />
+                <span asp-validation-for="debt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

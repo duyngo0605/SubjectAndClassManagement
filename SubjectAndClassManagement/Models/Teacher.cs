@@ -15,8 +15,6 @@ namespace SubjectAndClassManagement.Models
         public string email { get; set; }
 
         public string phone_number { get; set; }
-
-        public virtual ICollection<Class> Classes { get; set; }
     }
 
 }

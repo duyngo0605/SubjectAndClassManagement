@@ -1,0 +1,69 @@
+﻿@model SubjectAndClassManagement.Models.TuitionPayment
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>TuitionPayment</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.total_credits)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.total_credits)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.tuition_fee)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.tuition_fee)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.amount_to_pay)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.amount_to_pay)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.amount_paid)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.amount_paid)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.payment_time)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.payment_time)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.excess_money)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.excess_money)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.debt)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.debt)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Student)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Student.student_id)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="payment_id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SubjectAndClassManagement.Models.Subject>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.subject_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.subject_description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.credit)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.subject_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.subject_description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.credit)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.subject_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.subject_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.subject_id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
