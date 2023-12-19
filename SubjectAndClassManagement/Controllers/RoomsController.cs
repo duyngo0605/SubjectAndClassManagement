@@ -57,13 +57,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("room_id,room_name,room_capacity,building_name")] Room room)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(room);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(room);
+            _context.Add(room);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Rooms/Edit/5
@@ -89,32 +85,23 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("room_id,room_name,room_capacity,building_name")] Room room)
         {
-            if (id != room.room_id)
+            try
             {
-                return NotFound();
+                _context.Update(room);
+                await _context.SaveChangesAsync();
             }
-
-            if (ModelState.IsValid)
+            catch (DbUpdateConcurrencyException)
             {
-                try
+                if (!RoomExists(room.room_id))
                 {
-                    _context.Update(room);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!RoomExists(room.room_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(room);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Rooms/Delete/5

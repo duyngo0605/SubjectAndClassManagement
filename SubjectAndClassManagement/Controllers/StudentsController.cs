@@ -57,13 +57,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("student_id,student_name,email,phone_number")] Student student)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(student);
+            _context.Add(student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Students/Edit/5
@@ -89,32 +85,23 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number")] Student student)
         {
-            if (id != student.student_id)
+            try
             {
-                return NotFound();
+                _context.Update(student);
+                await _context.SaveChangesAsync();
             }
-
-            if (ModelState.IsValid)
+            catch (DbUpdateConcurrencyException)
             {
-                try
+                if (!StudentExists(student.student_id))
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!StudentExists(student.student_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Students/Delete/5

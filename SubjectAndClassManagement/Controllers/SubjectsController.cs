@@ -57,13 +57,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("subject_id,subject_name,subject_description,credit")] Subject subject)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(subject);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(subject);
+            _context.Add(subject);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Subjects/Edit/5
@@ -89,32 +85,23 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("subject_id,subject_name,subject_description,credit")] Subject subject)
         {
-            if (id != subject.subject_id)
+            try
             {
-                return NotFound();
+                _context.Update(subject);
+                await _context.SaveChangesAsync();
             }
-
-            if (ModelState.IsValid)
+            catch (DbUpdateConcurrencyException)
             {
-                try
+                if (!SubjectExists(subject.subject_id))
                 {
-                    _context.Update(subject);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!SubjectExists(subject.subject_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(subject);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Subjects/Delete/5

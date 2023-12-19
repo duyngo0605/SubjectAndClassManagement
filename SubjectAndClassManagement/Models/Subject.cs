@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SubjectAndClassManagement.Models
 {
@@ -17,6 +19,8 @@ namespace SubjectAndClassManagement.Models
         [Required]
         public int credit { get; set; }
 
-        public virtual ICollection<Subject> PrerequisiteSubjects { get; set; }
+        public virtual ICollection<TuitionPayment> TuitionPayments { get; set; }
+
+        public virtual ICollection<Class> Classes { get; set; }
     }
 }

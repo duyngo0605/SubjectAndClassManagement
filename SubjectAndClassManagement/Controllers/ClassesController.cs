@@ -62,16 +62,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("class_id,subject_id,room_id,teacher_id,number_of_members,days_of_week,class_period,start_date,end_date,year")] Class sclass)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(sclass);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["room_id"] = new SelectList(_context.Rooms, "room_id", "room_id", sclass.room_id);
-            ViewData["subject_id"] = new SelectList(_context.Subjects, "subject_id", "subject_id", sclass.subject_id);
-            ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", sclass.teacher_id);
-            return View(sclass);
+            _context.Add(sclass);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Classes/Edit/5
@@ -105,30 +98,23 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(sclass);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClassExists(sclass.class_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(sclass);
+                await _context.SaveChangesAsync();
             }
-            ViewData["room_id"] = new SelectList(_context.Rooms, "room_id", "room_id", sclass.room_id);
-            ViewData["subject_id"] = new SelectList(_context.Subjects, "subject_id", "subject_id", sclass.subject_id);
-            ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", sclass.teacher_id);
-            return View(sclass);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClassExists(sclass.class_id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Classes/Delete/5

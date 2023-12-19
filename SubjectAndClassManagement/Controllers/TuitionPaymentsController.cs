@@ -58,14 +58,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("payment_id,student_id,total_credits,tuition_fee,amount_to_pay,amount_paid,payment_time,excess_money,debt")] TuitionPayment tuitionPayment)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tuitionPayment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", tuitionPayment.student_id);
-            return View(tuitionPayment);
+            _context.Add(tuitionPayment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TuitionPayments/Edit/5
@@ -96,29 +91,23 @@ namespace SubjectAndClassManagement.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(tuitionPayment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TuitionPaymentExists(tuitionPayment.payment_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(tuitionPayment);
+                await _context.SaveChangesAsync();
             }
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", tuitionPayment.student_id);
-            return View(tuitionPayment);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TuitionPaymentExists(tuitionPayment.payment_id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TuitionPayments/Delete/5

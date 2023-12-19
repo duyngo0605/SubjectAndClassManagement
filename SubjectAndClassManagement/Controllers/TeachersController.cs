@@ -57,13 +57,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("teacher_id,teacher_name,email,phone_number")] Teacher teacher)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(teacher);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(teacher);
+            _context.Add(teacher);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Teachers/Edit/5
@@ -94,27 +90,23 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(teacher);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeacherExists(teacher.teacher_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(teacher);
+                await _context.SaveChangesAsync();
             }
-            return View(teacher);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TeacherExists(teacher.teacher_id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Teachers/Delete/5

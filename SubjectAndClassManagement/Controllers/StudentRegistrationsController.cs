@@ -60,15 +60,9 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("registration_id,student_id,class_id,registration_date,status,reason")] StudentRegistration studentRegistration)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(studentRegistration);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["class_id"] = new SelectList(_context.Classes, "class_id", "class_id", studentRegistration.class_id);
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", studentRegistration.student_id);
-            return View(studentRegistration);
+            _context.Add(studentRegistration);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: StudentRegistrations/Edit/5
@@ -96,34 +90,23 @@ namespace SubjectAndClassManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("registration_id,student_id,class_id,registration_date,status,reason")] StudentRegistration studentRegistration)
         {
-            if (id != studentRegistration.registration_id)
+            try
             {
-                return NotFound();
+                _context.Update(studentRegistration);
+                await _context.SaveChangesAsync();
             }
-
-            if (ModelState.IsValid)
+            catch (DbUpdateConcurrencyException)
             {
-                try
+                if (!StudentRegistrationExists(studentRegistration.registration_id))
                 {
-                    _context.Update(studentRegistration);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!StudentRegistrationExists(studentRegistration.registration_id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["class_id"] = new SelectList(_context.Classes, "class_id", "class_id", studentRegistration.class_id);
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", studentRegistration.student_id);
-            return View(studentRegistration);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: StudentRegistrations/Delete/5

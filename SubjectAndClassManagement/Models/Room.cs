@@ -16,5 +16,7 @@ namespace SubjectAndClassManagement.Models
         public int room_capacity { get; set; }
 
         public string building_name { get; set; }
+
+        public virtual ICollection<Class> Classes { get; set; }
     }
 }
