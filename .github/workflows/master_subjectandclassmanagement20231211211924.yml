@@ -54,4 +54,4 @@ jobs:
           app-name: 'SubjectAndClassManagement20231211211924'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_28870546D23F4AEFA3C7CC66775D1EC0 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7FD5E35CD3E3417B8E079998FE97A35E }}
