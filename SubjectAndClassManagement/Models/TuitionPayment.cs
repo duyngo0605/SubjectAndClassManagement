@@ -6,32 +6,32 @@ namespace SubjectAndClassManagement.Models
     {
         [Key]
         [StringLength(10)]
-        public string PaymentId { get; set; }
+        public string payment_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string StudentId { get; set; }
+        public string student_id { get; set; }
 
         [Required]
-        public int TotalCredits { get; set; }
+        public int total_credits { get; set; }
 
         [Required]
-        public decimal TuitionFee { get; set; }
+        public decimal tuition_fee { get; set; }
 
         [Required]
-        public decimal AmountToPay { get; set; }
+        public decimal amount_to_pay { get; set; }
 
         [Required]
-        public decimal AmountPaid { get; set; }
+        public decimal amount_paid { get; set; }
 
         [Required]
-        public DateTime PaymentTime { get; set; }
+        public DateTime payment_time { get; set; }
 
         [Required]
-        public decimal ExcessMoney { get; set; }
+        public decimal excess_money { get; set; }
 
         [Required]
-        public decimal Debt { get; set; }
+        public decimal debt { get; set; }
 
         public virtual Student Student { get; set; }
         public virtual ICollection<Subject> FeeSubjects { get; set; }

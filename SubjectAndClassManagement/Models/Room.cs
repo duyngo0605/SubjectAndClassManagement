@@ -6,16 +6,16 @@ namespace SubjectAndClassManagement.Models
     {
         [Key]
         [StringLength(10)]
-        public string RoomId { get; set; }
+        public string room_id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string RoomName { get; set; }
+        public string room_name { get; set; }
 
         [Required]
-        public int RoomCapacity { get; set; }
+        public int room_capacity { get; set; }
 
-        public string BuildingName { get; set; }
+        public string building_name { get; set; }
 
         public virtual ICollection<Class> Classes { get; set; }
     }

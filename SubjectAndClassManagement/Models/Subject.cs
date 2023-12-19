@@ -6,18 +6,17 @@ namespace SubjectAndClassManagement.Models
     {
         [Key]
         [StringLength(10)]
-        public string SubjectId { get; set; }
+        public string subject_id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string SubjectName { get; set; }
+        public string subject_name { get; set; }
 
-        public string SubjectDescription { get; set; }
+        public string subject_description { get; set; }
 
         [Required]
-        public int Credit { get; set; }
+        public int credit { get; set; }
 
         public virtual ICollection<Subject> PrerequisiteSubjects { get; set; }
-        public virtual ICollection<Subject> CurrentSubjects { get; set; }
     }
 }

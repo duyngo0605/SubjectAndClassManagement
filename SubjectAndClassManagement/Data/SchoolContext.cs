@@ -20,85 +20,85 @@ public class SchoolContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Subject>()
-            .HasKey(s => s.SubjectId);
+            .HasKey(s => s.subject_id);
 
         modelBuilder.Entity<Subject>()
-            .Property(s => s.SubjectName)
+            .Property(s => s.subject_name)
             .IsRequired();
 
         modelBuilder.Entity<Subject>()
-            .Property(s => s.Credit)
+            .Property(s => s.credit)
             .IsRequired();
 
         modelBuilder.Entity<Room>()
-            .HasKey(r => r.RoomId);
+            .HasKey(r => r.room_id);
 
         modelBuilder.Entity<Room>()
-            .Property(r => r.RoomName)
+            .Property(r => r.room_name)
             .IsRequired();
 
         modelBuilder.Entity<Room>()
-            .Property(r => r.RoomCapacity)
+            .Property(r => r.room_capacity)
             .IsRequired();
 
         modelBuilder.Entity<Teacher>()
-            .HasKey(t => t.TeacherId);
+            .HasKey(t => t.teacher_id);
 
         modelBuilder.Entity<Teacher>()
-            .Property(t => t.TeacherName)
+            .Property(t => t.teacher_name)
             .IsRequired();
 
         modelBuilder.Entity<Student>()
-            .HasKey(s => s.StudentId);
+            .HasKey(s => s.student_id);
 
         modelBuilder.Entity<Student>()
-            .Property(s => s.StudentName)
+            .Property(s => s.student_name)
             .IsRequired();
 
         modelBuilder.Entity<Class>()
-            .HasKey(c => c.ClassId);
+            .HasKey(c => c.class_id);
 
         modelBuilder.Entity<Class>()
             .HasOne(c => c.Subject)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(c => c.SubjectId);
+            .HasForeignKey(c => c.subject_id);
 
         modelBuilder.Entity<Class>()
             .HasOne(c => c.Room)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(c => c.RoomId);
+            .HasForeignKey(c => c.room_id);
 
         modelBuilder.Entity<Class>()
             .HasOne(c => c.Teacher)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(c => c.TeacherId);
+            .HasForeignKey(c => c.teacher_id);
 
         modelBuilder.Entity<StudentRegistration>()
-            .HasKey(sr => sr.RegistrationId);
+            .HasKey(sr => sr.registration_id);
 
         modelBuilder.Entity<StudentRegistration>()
             .HasOne(sr => sr.Student)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(sr => sr.StudentId);
+            .HasForeignKey(sr => sr.student_id);
 
         modelBuilder.Entity<StudentRegistration>()
             .HasOne(sr => sr.Class)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(sr => sr.ClassId);
+            .HasForeignKey(sr => sr.class_id);
 
         modelBuilder.Entity<TuitionPayment>()
-            .HasKey(tp => tp.PaymentId);
+            .HasKey(tp => tp.payment_id);
 
         modelBuilder.Entity<TuitionPayment>()
             .HasOne(tp => tp.Student)
             .WithMany()
             .IsRequired()
-            .HasForeignKey(tp => tp.StudentId);
+            .HasForeignKey(tp => tp.student_id);
     }
 
 }

@@ -8,24 +8,24 @@ namespace SubjectAndClassManagement.Models
     {
         [Key]
         [StringLength(10)]
-        public string RegistrationId { get; set; }
+        public string registration_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string StudentId { get; set; }
+        public string student_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string ClassId { get; set; }
+        public string class_id { get; set; }
 
         [Required]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime registration_date { get; set; }
 
         [Required]
         [StringLength(20)]
-        public string Status { get; set; }
+        public string status { get; set; }
 
-        public string Reason { get; set; }
+        public string reason { get; set; }
 
         public virtual Student Student { get; set; }
         public virtual Class Class { get; set; }

@@ -8,38 +8,38 @@ namespace SubjectAndClassManagement.Models
     {
         [Key]
         [StringLength(10)]
-        public string ClassId { get; set; }
+        public string class_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string SubjectId { get; set; }
+        public string subject_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string RoomId { get; set; }
+        public string room_id { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string TeacherId { get; set; }
+        public string teacher_id { get; set; }
 
         [Required]
-        public int NumberOfMembers { get; set; }
+        public int number_of_members { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string DaysOfWeek { get; set; }
+        public string days_of_week { get; set; }
 
         [Required]
-        public int ClassPeriod { get; set; }
+        public int class_period { get; set; }
 
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime start_date { get; set; }
 
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime end_date { get; set; }
 
         [Required]
-        public int Year { get; set; }
+        public int year { get; set; }
 
         public virtual Subject Subject { get; set; }
         public virtual Room Room { get; set; }
