@@ -1,36 +1,57 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - SubjectAndClassManagement20231211211924
+
 on:
   push:
     branches:
-    - master
-env:
-  DOTNET_CORE_VERSION: 7.0.x
-  CONTAINER_APP_NAME: subjectandclassmanagement-container-app
-  CONTAINER_APP_ENVIRONMENT_NAME: managedEnv20231219162906
-  RESOURCE_GROUP: OOAD
-  CONTAINER_REGISTRY_NAME: registry20231219163233
-  CONTAINER_REGISTRY_LOGIN_SERVER: registry20231219163233.azurecr.io
+      - master
+  workflow_dispatch:
+
 jobs:
-  BuildAndDeployContainerApp:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
+
     steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.managedEnv20231219162906_SPN }}
-    - name: Container App deploy
-      uses: azure/container-apps-deploy-action@v1
-      with:
-        appSourcePath: ${{ github.workspace }}
-        acrName: ${{ env.CONTAINER_REGISTRY_NAME }}
-        acrUsername: ${{ secrets.registry20231219163233_USERNAME_0F4A }}
-        acrPassword: ${{ secrets.registry20231219163233_PASSWORD_0F4A }}
-        imageToBuild: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-        containerAppName: ${{ env.CONTAINER_APP_NAME }}
-        containerAppEnvironment: ${{ env.CONTAINER_APP_ENVIRONMENT_NAME }}
-        resourceGroup: ${{ env.RESOURCE_GROUP }}
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0'
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+      
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'SubjectAndClassManagement20231211211924'
+          slot-name: 'production'
+          package: .
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_e8640b42d9f64485bff2551f881b643a }}
