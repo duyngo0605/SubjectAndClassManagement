@@ -33,9 +33,13 @@ namespace SubjectAndClassManagement.Models
         public int class_period { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM--yyyy}", ApplyFormatInEditMode = true)]
         public DateTime start_date { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM--yyyy}", ApplyFormatInEditMode = true)]
         public DateTime end_date { get; set; }
 
         [Required]

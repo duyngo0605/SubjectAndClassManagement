@@ -16,6 +16,7 @@ public class SchoolContext : DbContext
     public DbSet<Class> Classes { get; set; }
     public DbSet<StudentRegistration> StudentRegistrations { get; set; }
     public DbSet<TuitionPayment> TuitionPayments { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,5 +123,44 @@ public class SchoolContext : DbContext
         modelBuilder.Entity<TuitionPayment>()
             .Property(tp => tp.student_id)
             .HasMaxLength(10);
+        modelBuilder.Entity<User>()
+        .HasKey(u => u.UserId);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.UserId)
+            .HasMaxLength(10);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Username)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Password)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.UserType)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Student)
+            .WithOne(s => s.User)
+            .HasForeignKey<User>(u => u.StudentId)
+            .IsRequired(false);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Teacher)
+            .WithOne(t => t.User)
+            .HasForeignKey<User>(u => u.TeacherId)
+            .IsRequired(false);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
     }
+
 }

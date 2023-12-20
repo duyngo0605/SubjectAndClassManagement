@@ -1,10 +1,21 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SubjectAndClassManagement.Models;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option => {
+        option.LoginPath = "/Login";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    });
+
+builder.Services.AddSession();
 
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
@@ -19,6 +30,8 @@ else
 
 builder.Services.AddDbContext<SchoolContext>(options =>
     options.UseSqlServer(connection));
+
+
 
 
 var app = builder.Build();
@@ -37,6 +50,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Accounts}/{action=Login}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
