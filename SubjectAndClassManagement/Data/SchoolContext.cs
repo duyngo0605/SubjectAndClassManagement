@@ -124,41 +124,41 @@ public class SchoolContext : DbContext
             .Property(tp => tp.student_id)
             .HasMaxLength(10);
         modelBuilder.Entity<User>()
-        .HasKey(u => u.UserId);
+        .HasKey(u => u.user_id);
 
         modelBuilder.Entity<User>()
-            .Property(u => u.UserId)
+            .Property(u => u.user_id)
             .HasMaxLength(10);
 
         modelBuilder.Entity<User>()
-            .Property(u => u.Username)
+            .Property(u => u.username)
             .HasMaxLength(255)
             .IsRequired();
 
         modelBuilder.Entity<User>()
-            .Property(u => u.Password)
+            .Property(u => u.password)
             .HasMaxLength(255)
             .IsRequired();
 
         modelBuilder.Entity<User>()
-            .Property(u => u.UserType)
+            .Property(u => u.user_type)
             .HasMaxLength(20)
             .IsRequired();
 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Student)
             .WithOne(s => s.User)
-            .HasForeignKey<User>(u => u.StudentId)
+            .HasForeignKey<User>(u => u.student_id)
             .IsRequired(false);
 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Teacher)
             .WithOne(t => t.User)
-            .HasForeignKey<User>(u => u.TeacherId)
+            .HasForeignKey<User>(u => u.teacher_id)
             .IsRequired(false);
 
         modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
+            .HasIndex(u => u.username)
             .IsUnique();
 
     }
