@@ -1,0 +1,44 @@
+﻿@model SubjectAndClassManagement.Models.LoginViewModel
+
+@{
+    Layout = "_LayoutLogin";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <h2><strong>@TempData["Message"]</strong></h2>
+    @using (Html.BeginForm("Login", "Accounts", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label">Username:</label>
+                <input asp-for="Username" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">Password:</label>
+                <input asp-for="Password" class="form-control"  type="password" />
+            </div>
+            <div class="form-group">
+                <label asp-for="RememberMe" class="control-label">Remember me:</label>
+                <input asp-for="RememberMe" type="checkbox" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-primary"/>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(ViewData["Error"] as string))
+    {
+        <p style="color:red;">@ViewData["Error"]</p>
+    }
+
+</body>
+</html>
