@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,9 +22,17 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-              return _context.Students != null ? 
+            if (User.IsInRole("student"))
+            {
+                await Details(User.FindFirstValue("StudentId"));
+                return View("Details");
+            }
+            else
+            {
+                return _context.Students != null ?
                           View(await _context.Students.ToListAsync()) :
                           Problem("Entity set 'SchoolContext.Students'  is null.");
+            }
         }
 
         // GET: Students/Details/5

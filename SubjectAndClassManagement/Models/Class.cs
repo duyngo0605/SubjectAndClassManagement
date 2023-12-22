@@ -42,13 +42,10 @@ namespace SubjectAndClassManagement.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM--yyyy}", ApplyFormatInEditMode = true)]
         public DateTime end_date { get; set; }
 
-        [Required]
-        public int year { get; set; }
 
         public virtual Subject Subject { get; set; }
         public virtual Room Room { get; set; }
         public virtual Teacher Teacher { get; set; }
-
         public virtual ICollection<StudentRegistration> StudentRegistrations { get; set; }
     }
 

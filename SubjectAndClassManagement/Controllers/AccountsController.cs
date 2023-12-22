@@ -46,16 +46,20 @@ namespace SubjectAndClassManagement.Controllers
             List<Claim> claims = new List<Claim>() {
                     new Claim(ClaimTypes.NameIdentifier,para),
                     new Claim("username", para),
-
-                    new Claim("OtherProperties","Example Role")
                 };
 
             // Thêm role vào danh sách claims dựa trên user_type
             var user = _context.Users.FirstOrDefault(u => u.username == para);
-            if (user != null && !string.IsNullOrEmpty(user.user_type))
+            if (user != null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, user.user_type));
+                if (!string.IsNullOrEmpty(user.user_type))
+                    claims.Add(new Claim(ClaimTypes.Role, user.user_type));
+                if (!string.IsNullOrEmpty(user.student_id))
+                    claims.Add(new Claim("StudentId", user.student_id));
+                if (!string.IsNullOrEmpty(user.teacher_id))
+                    claims.Add(new Claim("TeacherId", user.teacher_id));
             }
+            
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);

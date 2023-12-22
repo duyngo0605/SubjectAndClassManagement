@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,7 +22,12 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Subjects
         public async Task<IActionResult> Index()
         {
-              return _context.Subjects != null ? 
+            if (User.IsInRole("teacher"))
+            {
+                await Details(User.FindFirstValue("TeacherId"));
+                return View("Details");
+            }
+            return _context.Subjects != null ? 
                           View(await _context.Subjects.ToListAsync()) :
                           Problem("Entity set 'SchoolContext.Subjects'  is null.");
         }

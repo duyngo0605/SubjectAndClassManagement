@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿
+@{
+    
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -48,10 +53,35 @@
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="StudentRegistrations" asp-action="Index">Student Registration</a>
                             </li>
+                           
+                        }
+                        @if (User.IsInRole("student"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Students</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Classes" asp-action="Index">Classes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TuitionPayments" asp-action="Index">Tuition Payments</a>
+                            </li>
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Logout">Logout</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="StudentRegistrations" asp-action="Index">Student Registration</a>
                             </li>
                         }
+                        @if (User.IsInRole("teacher"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Teachers" asp-action="Index">Teachers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Classes" asp-action="Index">Classes</a>
+                            </li>
+                        }
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Logout">Logout</a>
+                        </li>
 
                         <!-- Add more navigation links for other models as needed -->
                     </ul>
