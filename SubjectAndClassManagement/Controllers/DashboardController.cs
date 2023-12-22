@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SubjectAndClassManagement.Controllers
 {
     [Authorize] //Chỉ được vào trang Dashboard nếu đã Login THÀNH CÔNG
-    public class Dashboard : Controller
+    public class DashboardController : Controller
     {
         public IActionResult Index()
         {

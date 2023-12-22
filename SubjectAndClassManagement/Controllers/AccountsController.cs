@@ -34,7 +34,7 @@ namespace SubjectAndClassManagement.Controllers
             if (isValidAccount(model))
             {
                 CreateAuthenticationAndSession(model.Username);
-                return RedirectToAction("Index", "Home"); //Access valid
+                return RedirectToAction("Index", "Dashboard"); //Access valid
             }
             TempData["Message"] = "Login Failed!";
             return View(model); //Invalid Access
@@ -49,6 +49,13 @@ namespace SubjectAndClassManagement.Controllers
 
                     new Claim("OtherProperties","Example Role")
                 };
+
+            // Thêm role vào danh sách claims dựa trên user_type
+            var user = _context.Users.FirstOrDefault(u => u.username == para);
+            if (user != null && !string.IsNullOrEmpty(user.user_type))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, user.user_type));
+            }
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);
@@ -69,6 +76,19 @@ namespace SubjectAndClassManagement.Controllers
 
             if (user == null) return false;
             return true;
+        }
+
+        public IActionResult SomeAction()
+        {
+            // Lấy ra giá trị của username từ claims
+            string username = User.FindFirstValue("username");
+
+            // Lấy ra giá trị của role từ claims
+            string role = User.FindFirstValue("OtherProperties");
+
+            // Thực hiện các hành động khác với thông tin người dùng
+
+            return View();
         }
     }
 }
