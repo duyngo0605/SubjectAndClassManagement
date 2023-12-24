@@ -5,9 +5,6 @@ namespace SubjectAndClassManagement.Models
     public class User
     {
         [Key]
-        [Display(Name = "User ID")]
-        public string user_id { get; set; }
-
         [Required]
         [StringLength(255)]
         [Display(Name = "Username")]
@@ -34,5 +31,9 @@ namespace SubjectAndClassManagement.Models
         public Student Student { get; set; }
 
         public Teacher Teacher { get; set; }
+
+        public Profile Profile {
+            get; set;
+        }
     }
 }

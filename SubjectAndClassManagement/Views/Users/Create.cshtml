@@ -10,13 +10,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="createForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="user_id" class="control-label"></label>
-                <input asp-for="user_id" class="form-control" />
-                <span asp-validation-for="user_id" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="username" class="control-label"></label>
                 <input asp-for="username" class="form-control" />
@@ -29,16 +24,24 @@
             </div>
             <div class="form-group">
                 <label asp-for="user_type" class="control-label"></label>
-                <input asp-for="user_type" class="form-control" />
+                <select asp-for="user_type" class="form-control" id="userTypeSelect">
+                    <option value="admin">Admin</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
                 <span asp-validation-for="user_type" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="studentIdGroup" style="display:none;">
                 <label asp-for="student_id" class="control-label"></label>
-                <select asp-for="student_id" class ="form-control" asp-items="ViewBag.student_id"></select>
+                <select asp-for="student_id" class="form-control" asp-items="ViewBag.student_id">
+                    <option value="">-- Select Student --</option>
+                </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="teacherIdGroup" style="display:none;">
                 <label asp-for="teacher_id" class="control-label"></label>
-                <select asp-for="teacher_id" class ="form-control" asp-items="ViewBag.teacher_id"></select>
+                <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.teacher_id">
+                    <option value="">-- Select Teacher --</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -53,4 +56,26 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Function to show/hide student_id and teacher_id based on user_type
+        function updateUserType() {
+            var userType = $("#userTypeSelect").val();
+            if (userType === "student") {
+                $("#studentIdGroup").show();
+                $("#teacherIdGroup").hide();
+            } else if (userType === "teacher") {
+                $("#studentIdGroup").hide();
+                $("#teacherIdGroup").show();
+            } else {
+                $("#studentIdGroup").hide();
+                $("#teacherIdGroup").hide();
+            }
+        }
+
+        // Bind the function to the change event of user_type select
+        $("#userTypeSelect").change(updateUserType);
+
+        // Call the function on page load to set initial state
+        updateUserType();
+    </script>
 }

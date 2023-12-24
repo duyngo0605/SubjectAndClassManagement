@@ -36,7 +36,7 @@ namespace SubjectAndClassManagement.Controllers
             var user = await _context.Users
                 .Include(u => u.Student)
                 .Include(u => u.Teacher)
-                .FirstOrDefaultAsync(m => m.user_id == id);
+                .FirstOrDefaultAsync(m => m.username == id);
             if (user == null)
             {
                 return NotFound();
@@ -58,17 +58,13 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("user_id,username,password,user_type,student_id,teacher_id")] User user)
+        public async Task<IActionResult> Create([Bind("username,password,user_type,student_id,teacher_id")] User user)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", user.student_id);
-            ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", user.teacher_id);
-            return View(user);
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            _context.Add(user.Profile = new Profile(user.username));
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Edit/5
@@ -94,9 +90,9 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("user_id,username,password,user_type,student_id,teacher_id")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("username,password,user_type,student_id,teacher_id")] User user)
         {
-            if (id != user.user_id)
+            if (id != user.username)
             {
                 return NotFound();
             }
@@ -110,7 +106,7 @@ namespace SubjectAndClassManagement.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.user_id))
+                    if (!UserExists(user.username))
                     {
                         return NotFound();
                     }
@@ -137,7 +133,7 @@ namespace SubjectAndClassManagement.Controllers
             var user = await _context.Users
                 .Include(u => u.Student)
                 .Include(u => u.Teacher)
-                .FirstOrDefaultAsync(m => m.user_id == id);
+                .FirstOrDefaultAsync(m => m.username == id);
             if (user == null)
             {
                 return NotFound();
@@ -167,7 +163,7 @@ namespace SubjectAndClassManagement.Controllers
 
         private bool UserExists(string id)
         {
-          return (_context.Users?.Any(e => e.user_id == id)).GetValueOrDefault();
+          return (_context.Users?.Any(e => e.username == id)).GetValueOrDefault();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace SubjectAndClassManagement.Controllers
                           Problem("Entity set 'SchoolContext.Students'  is null.");
             }
         }
-
+            
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -44,7 +44,10 @@ namespace SubjectAndClassManagement.Controllers
             }
 
             var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.student_id == id);
+            .Include(s => s.User)               // Include User
+            .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+            .FirstOrDefaultAsync(m => m.student_id == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -79,7 +82,10 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+               .Include(s => s.User)               // Include User
+               .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+               .FirstOrDefaultAsync(m => m.student_id == id);
             if (student == null)
             {
                 return NotFound();
@@ -92,11 +98,13 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number")] Student student)
+        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number, User")] Student student)
         {
             try
             {
+                var profile = student.User.Profile;
                 _context.Update(student);
+                _context.Update(profile);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,9 +22,17 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Teachers
         public async Task<IActionResult> Index()
         {
-              return _context.Teachers != null ? 
+            if (User.IsInRole("teacher"))
+            {
+                await Details(User.FindFirstValue("TeacherId"));
+                return View("Details");
+            }
+            else
+            {
+                return _context.Teachers != null ?
                           View(await _context.Teachers.ToListAsync()) :
                           Problem("Entity set 'SchoolContext.Teachers'  is null.");
+            }
         }
 
         // GET: Teachers/Details/5
@@ -35,7 +44,10 @@ namespace SubjectAndClassManagement.Controllers
             }
 
             var teacher = await _context.Teachers
-                .FirstOrDefaultAsync(m => m.teacher_id == id);
+            .Include(s => s.User)               // Include User
+            .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+            .FirstOrDefaultAsync(m => m.teacher_id == id);
+            
             if (teacher == null)
             {
                 return NotFound();
@@ -70,7 +82,10 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            var teacher = await _context.Teachers.FindAsync(id);
+            var teacher = await _context.Teachers
+               .Include(s => s.User)               // Include User
+               .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+               .FirstOrDefaultAsync(m => m.teacher_id == id);
             if (teacher == null)
             {
                 return NotFound();
@@ -83,16 +98,13 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("teacher_id,teacher_name,email,phone_number")] Teacher teacher)
+        public async Task<IActionResult> Edit(string id, [Bind("teacher_id,teacher_name,email,phone_number, User")] Teacher teacher)
         {
-            if (id != teacher.teacher_id)
-            {
-                return NotFound();
-            }
-
             try
             {
+                var profile = teacher.User.Profile;
                 _context.Update(teacher);
+                _context.Update(profile);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
