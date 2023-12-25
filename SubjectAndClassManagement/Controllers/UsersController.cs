@@ -151,9 +151,10 @@ namespace SubjectAndClassManagement.Controllers
             {
                 return Problem("Entity set 'SchoolContext.Users'  is null.");
             }
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(u=>u.Profile).FirstOrDefaultAsync(m => m.username == id);
             if (user != null)
             {
+                _context.Profiles.Remove(user.Profile);
                 _context.Users.Remove(user);
             }
             

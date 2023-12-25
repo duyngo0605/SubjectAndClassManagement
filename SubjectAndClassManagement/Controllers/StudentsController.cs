@@ -131,6 +131,17 @@ namespace SubjectAndClassManagement.Controllers
 
             var student = await _context.Students
                 .FirstOrDefaultAsync(m => m.student_id == id);
+
+            // Check if there are linked users
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.student_id == id);
+
+            if (user != null)
+            {
+                // Display confirmation dialog
+                ViewData["LinkedUser"] = user;
+                return View("Delete", student);
+            }
+
             if (student == null)
             {
                 return NotFound();
@@ -148,9 +159,17 @@ namespace SubjectAndClassManagement.Controllers
             {
                 return Problem("Entity set 'SchoolContext.Students'  is null.");
             }
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+                .Include(u => u.User)
+                .ThenInclude(u => u.Profile)
+                .FirstOrDefaultAsync(m => m.student_id == id);
             if (student != null)
             {
+                if (student.User != null)
+                {
+                    _context.Profiles.Remove(student.User.Profile);
+                    _context.Users.Remove(student.User);
+                }    
                 _context.Students.Remove(student);
             }
             
