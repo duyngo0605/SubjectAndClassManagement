@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using SubjectAndClassManagement.Models;
 
 namespace SubjectAndClassManagement.Controllers
@@ -21,8 +23,42 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
-            var schoolContext = _context.Classes.Include(s => s.Room).Include(s => s.Subject).Include(s => s.Teacher);
-            return View(await schoolContext.ToListAsync());
+            if (User.IsInRole("student"))
+            {
+                // Assuming studentId is stored as a claim
+                string studentId = User.FindFirstValue("StudentId");
+
+                var studentClasses = _context.Classes
+                    .Where(c => c.StudentRegistrations.Any(sr => sr.student_id == studentId))
+                    .Include(s => s.Room)
+                    .Include(s => s.Subject)
+                    .Include(s => s.Teacher);
+
+                return View(await studentClasses.ToListAsync());
+            }
+            else if (User.IsInRole("teacher"))
+            {
+                // Assuming teacherId is stored as a claim
+                string teacherId = User.FindFirstValue("TeacherId");
+
+                var teacherClasses = _context.Classes
+                    .Where(c => c.teacher_id == teacherId)
+                    .Include(s => s.Room)
+                    .Include(s => s.Subject)
+                    .Include(s => s.Teacher);
+
+                return View(await teacherClasses.ToListAsync());
+            }
+            else
+            {
+                // If the user is not in the student or teacher role, show all classes
+                var allClasses = _context.Classes
+                    .Include(s => s.Room)
+                    .Include(s => s.Subject)
+                    .Include(s => s.Teacher);
+
+                return View(await allClasses.ToListAsync());
+            }
         }
 
         // GET: Classes/Details/5

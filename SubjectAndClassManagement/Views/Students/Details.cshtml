@@ -10,26 +10,52 @@
     <h4>Student</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.student_name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.student_name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.email)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.phone_number)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.phone_number)
+        </dd>
+        @* Display Profile Information *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.date_of_birth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.gender)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.gender)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.citizen_id_card)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.citizen_id_card)
         </dd>
     </dl>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.student_id">Edit</a> |
     <a asp-action="Index">Back to List</a>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,11 +22,19 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-              return _context.Students != null ? 
+            if (User.IsInRole("student"))
+            {
+                await Details(User.FindFirstValue("StudentId"));
+                return View("Details");
+            }
+            else
+            {
+                return _context.Students != null ?
                           View(await _context.Students.ToListAsync()) :
                           Problem("Entity set 'SchoolContext.Students'  is null.");
+            }
         }
-
+            
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -35,7 +44,10 @@ namespace SubjectAndClassManagement.Controllers
             }
 
             var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.student_id == id);
+            .Include(s => s.User)               // Include User
+            .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+            .FirstOrDefaultAsync(m => m.student_id == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -70,7 +82,10 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+               .Include(s => s.User)               // Include User
+               .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+               .FirstOrDefaultAsync(m => m.student_id == id);
             if (student == null)
             {
                 return NotFound();
@@ -83,11 +98,13 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number")] Student student)
+        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number, User")] Student student)
         {
             try
             {
+                var profile = student.User.Profile;
                 _context.Update(student);
+                _context.Update(profile);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -114,6 +131,17 @@ namespace SubjectAndClassManagement.Controllers
 
             var student = await _context.Students
                 .FirstOrDefaultAsync(m => m.student_id == id);
+
+            // Check if there are linked users
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.student_id == id);
+
+            if (user != null)
+            {
+                // Display confirmation dialog
+                ViewData["LinkedUser"] = user;
+                return View("Delete", student);
+            }
+
             if (student == null)
             {
                 return NotFound();
@@ -131,9 +159,17 @@ namespace SubjectAndClassManagement.Controllers
             {
                 return Problem("Entity set 'SchoolContext.Students'  is null.");
             }
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+                .Include(u => u.User)
+                .ThenInclude(u => u.Profile)
+                .FirstOrDefaultAsync(m => m.student_id == id);
             if (student != null)
             {
+                if (student.User != null)
+                {
+                    _context.Profiles.Remove(student.User.Profile);
+                    _context.Users.Remove(student.User);
+                }    
                 _context.Students.Remove(student);
             }
             

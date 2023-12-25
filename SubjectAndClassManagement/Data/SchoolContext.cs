@@ -17,6 +17,7 @@ public class SchoolContext : DbContext
     public DbSet<StudentRegistration> StudentRegistrations { get; set; }
     public DbSet<TuitionPayment> TuitionPayments { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +89,12 @@ public class SchoolContext : DbContext
             .Property(s => s.student_name)
             .HasMaxLength(255);
 
+        modelBuilder.Entity<Student>()
+            .HasOne(u => u.User)
+            .WithOne(s => s.Student)
+            .HasForeignKey<Student>(u => u.student_id)
+            .IsRequired(false);
+
         modelBuilder.Entity<Class>()
             .Property(c => c.class_id)
             .HasMaxLength(10);
@@ -124,11 +131,7 @@ public class SchoolContext : DbContext
             .Property(tp => tp.student_id)
             .HasMaxLength(10);
         modelBuilder.Entity<User>()
-        .HasKey(u => u.user_id);
-
-        modelBuilder.Entity<User>()
-            .Property(u => u.user_id)
-            .HasMaxLength(10);
+        .HasKey(u => u.username);
 
         modelBuilder.Entity<User>()
             .Property(u => u.username)
@@ -161,6 +164,14 @@ public class SchoolContext : DbContext
             .HasIndex(u => u.username)
             .IsUnique();
 
+        modelBuilder.Entity<Profile>()
+            .Property(u => u.profile_id);
+
+        modelBuilder.Entity<Profile>()
+            .HasOne(p => p.User)
+            .WithOne(u => u.Profile)
+            .HasForeignKey<Profile>(p => p.username)
+            .IsRequired();
     }
 
 }
