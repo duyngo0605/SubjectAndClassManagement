@@ -104,7 +104,7 @@
 
                     </li>
                     <li class="nav-item mt-2">
-                        <a class="text-decoration-none text-light" asp-area="" asp-controller="Grade" asp-action="Index">
+                        <a class="text-decoration-none text-light" asp-area="" asp-controller="TeachGrade" asp-action="Index">
                             <i class="fa-solid fa-book-open me-3"></i>Grade
                         </a>
 
@@ -128,8 +128,16 @@
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="information.html">Information</a>
-                        <a class="dropdown-item" href="notify.html">Notify</a>
+                        @if (User.IsInRole("student"))
+                        {
+                            <a class="dropdown-item" asp-area="" asp-controller="StuInfo" asp-action="Index">Information</a>
+                        }
+                        @if (User.IsInRole("teacher"))
+                        {
+                            <a class="dropdown-item" asp-area="" asp-controller="TeachInfo" asp-action="Index">Information</a>
+                        }
+
+                        <a class="dropdown-item" asp-area="" asp-controller="Notification" asp-action="Index">Notify</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-area="" asp-controller="Dashboard" asp-action="Logout">Logout</a>
                     </div>
