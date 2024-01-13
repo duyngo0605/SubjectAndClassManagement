@@ -44,6 +44,8 @@ namespace SubjectAndClassManagement.Controllers
             return View(notification);
         }
 
+       
+
         // GET: Notifications/Create
         public IActionResult Create()
         {
