@@ -19,6 +19,8 @@ public class SchoolContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Profile> Profiles { get; set; }
 
+    public DbSet<Notification> Notifications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Class>()
@@ -172,6 +174,9 @@ public class SchoolContext : DbContext
             .WithOne(u => u.Profile)
             .HasForeignKey<Profile>(p => p.username)
             .IsRequired();
+
+        modelBuilder.Entity<Notification>()
+            .Property(u => u.notify_id);
     }
 
 }

@@ -1,11 +1,12 @@
-﻿@model SubjectAndClassManagement.Models.NotificationModel
+﻿@model SubjectAndClassManagement.Models.Notification
+
 @{
     ViewData["Title"] = "Create";
 }
 
 <h1>Create</h1>
 
-
+<h4>Notification</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -27,9 +28,9 @@
                 <span asp-validation-for="notify_day" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="notify_decription" class="control-label"></label>
-                <textarea asp-for="notify_decription" class="form-control"></textarea>
-                <span asp-validation-for="notify_decription" class="text-danger"></span>
+                <label asp-for="notify_description" class="control-label"></label>
+                <input asp-for="notify_description" class="form-control" />
+                <span asp-validation-for="notify_description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -43,8 +44,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
