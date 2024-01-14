@@ -7,9 +7,8 @@ namespace SubjectAndClassManagement.Models
     public class Notification
     {
         [Key]
-        [StringLength(10)]
         [Display(Name = "Notify Id")]
-        public string notify_id { get; set; }
+        public int notify_id { get; set; }
 
         [Required]
         [StringLength(50)]
