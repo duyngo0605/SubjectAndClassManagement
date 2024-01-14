@@ -1,7 +1,7 @@
-﻿@model IEnumerable<SubjectAndClassManagement.Models.Student>
-
+﻿@model IEnumerable<SubjectAndClassManagement.Models.Class>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Timetable";
+    var daysOfWeek = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 }
 
 <style>
@@ -49,12 +49,9 @@
     }
 </style>
 
-
-<h1>Welcom teacher</h1>
-
 <fieldset>
     <div class="fieldset-wrapper">
-        <p class="fs-3">Thông tin cần xem</p>
+        <p class="fs-3">Timetable</p>
         <div class="form-item me-3 mb-2">
             <label class="mb-2">Học kì</label>
             <select class="form-select">
@@ -81,197 +78,83 @@
 <table class="table table-bordered mt-3 ms-1">
     <thead>
         <tr>
-            <th>day / lesson</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Saturday</th>
+            <th>Day / Period</th>
+            @foreach (var day in daysOfWeek)
+            {
+                    <th>@day</th>
+            }
         </tr>
     </thead>
     <tbody>
-        <tr class="odd">
-            <td class="center-cell-data">
-                lesson 1
-                <br>
-                (7:30 - 8:15)
-            </td>
-            <td rowspan="4" class="rowspan_data">
-                <strong>SE347.011.PMCL - VN</strong>
-                <br>
-                Sĩ số: 50
-                <br>
-                Công nghệ web và ứng dụng
-                <br>
-                P C216(CLC)
-                <br>
-                BĐ:11/09/23
-                <br>
-                KT:09/12/23
-            </td>
-            <td rowspan="3" class="rowspan_data">
-                <strong>SE100.O12.PMCL - EN</strong>
-                <br>
-                Sĩ số: 44
-                <br>
-                Phương pháp Phát triển phần mềm hướng đối tượng
-                <br>
-                P B1.10
-                <br>
-                BĐ:11/09/23
-                <br>
-                KT:30/12/23
-            </td>
-            <td style="background-color: #ccc;"></td>
-            <td rowspan="3" class="rowspan_data">
-                <strong>SE113.O11.PMCL - EN</strong>
-                <br>
-                Sĩ số: 46
-                <br>
-                Kiểm chứng phần mềm
-                <br>
-                P C301 (CLC)
-                <br>
-                BĐ:11/09/23
-                <br>
-                KT:02/12/23
-            </td>
-            <td></td>
-            <td></td>
+        @for (int period = 1; period <= 10; period++)
+        {
+                <tr class="@(period % 2 == 0 ? "even" : "odd")">
+                    <td class="center-cell-data">
+                    @Html.Raw($"Period {period}<br>({GetTimeRange(period)})")
+                    </td>
+                @foreach (var day in daysOfWeek)
+                {
+                    var firstPeriodNumber = period == 10 ? "0" : period.ToString();
+                    var classForPeriodAndDay = Model
+                        .FirstOrDefault(c => c.days_of_week == day && c.first_period == firstPeriodNumber);
 
-        </tr>
-
-        <tr class="even">
-            <td class="center-cell-data">
-                lesson 2
-                <br>
-                (8:15 - 9:00)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-
-        </tr>
-        <tr class="odd">
-            <td class="center-cell-data">
-                lesson 3
-                <br>
-                (9:00 - 9:45)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="even">
-            <td class="center-cell-data">
-                lesson 4
-                <br>
-                (10:00 - 10:45)
-            </td>
-            <td></td>
-            <td rowspan="2" class="rowspan_data">
-                <strong>SS008.O11 - VN</strong>
-                <br>
-                Sĩ số: 151
-                <br>
-                Kinh tế chính trị Mác – Lênin
-                <br>
-                P B6.06
-                <br>
-                BĐ:11/09/23
-                <br>
-                KT:30/12/23
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="odd">
-            <td class="center-cell-data">
-                lesson 5
-                <br>
-                (10:45 - 11:30)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="even">
-            <td class="center-cell-data">
-                lesson 6
-                <br>
-                (13:00 - 13:45)
-            </td>
-            <td></td>
-            <td rowspan="4" class="rowspan_data">
-                <strong>SE357.O12.PMCL - VN - (Cách 2 tuần)</strong>
-                <br>
-                Sĩ số: 49
-                <br>
-                Kỹ thuật phân tích yêu cầu
-                <br>
-                P C212 (CLC)
-                <br>
-                BĐ:18/09/23
-                <br>
-                KT:06/01/24
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="odd">
-            <td class="center-cell-data">
-                lesson 7
-                <br>
-                (13:45 - 14:30)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="even">
-            <td class="center-cell-data">
-                lesson 8
-                <br>
-                (14:30 - 15:15)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="odd">
-            <td class="center-cell-data">
-                lesson 9
-                <br>
-                (15:30 - 16:15)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="even">
-            <td class="center-cell-data">
-                lesson 10
-                <br>
-                (16:15 - 17:00)
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+                    if (classForPeriodAndDay != null)
+                    {
+                                    <td rowspan="@classForPeriodAndDay.class_period" class="rowspan_data">
+                                        <strong>@classForPeriodAndDay.Subject.subject_name</strong>
+                                        <br>
+                                        Size: @classForPeriodAndDay.number_of_members
+                                        <br>
+                            @classForPeriodAndDay.Subject.subject_description
+                                        <br>
+                            @classForPeriodAndDay.Room.room_name
+                                        <br>
+                                        Start: @classForPeriodAndDay.start_date.ToString("dd/MM/yy")
+                                        <br>
+                                        End: @classForPeriodAndDay.end_date.ToString("dd/MM/yy")
+                                    </td>
+                    }
+                    else if (!IsClassScheduledForPeriod(Model, day, period))
+                    {
+                                    <td></td>
+                    }
+                }
+                </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+        <script>
+            document.querySelector('.form-submit').addEventListener('click', function() {
+                // Choose semester
+            });
+        </script>
+}
+
+    @functions {
+    private string GetTimeRange(int lesson)
+    {
+        // Return a string representing the time range for the lesson
+        switch (lesson)
+        {
+            case 1: return "7:30 - 8:15";
+            case 2: return "8:15 - 9:00";
+            case 3: return "9:00 - 9:45";
+            case 4: return "10:00 - 10:45";
+            case 5: return "10:45 - 11:30";
+            case 6: return "13:00 - 13:45";
+            case 7: return "13:45 - 14:30";
+            case 8: return "14:30 - 15:15";
+            case 9: return "15:30 - 16:15";
+            case 10: return "16:15 - 17:00";
+            default: return "Extra Classes";
+        }
+    }
+    private bool IsClassScheduledForPeriod(IEnumerable<SubjectAndClassManagement.Models.Class> classes, string day, int period)
+    {
+        return classes.Any(c => c.days_of_week == day &&
+                                int.Parse(c.first_period) <= period &&
+                                (int.Parse(c.first_period) + c.class_period - 1) >= period);
+    }
+}
