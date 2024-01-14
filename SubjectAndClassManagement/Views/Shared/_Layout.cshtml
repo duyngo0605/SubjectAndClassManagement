@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Security.Claims
+
 @{
     
 }
@@ -129,8 +130,20 @@
             <div class="head mb-5">
                 <div class="dropdown show float-end">
                     <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Nguyễn Dương Viết Dũng
+                        @{
+                            if (User.IsInRole("admin"))
+                            {
+                                <h5>Admin</h5>
+                            }
+                            else
+                            {
+                                var username = User.FindFirstValue("username");
+                                @username
+                            }
+                        }
                     </a>
+
+
 
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         @if (User.IsInRole("student"))
