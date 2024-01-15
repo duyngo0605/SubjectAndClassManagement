@@ -7,39 +7,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
 
     <h2><strong>@TempData["Message"]</strong></h2>
-    @using (Html.BeginForm("Login", "Accounts", FormMethod.Post))
+    @using (Html.BeginForm("Register", "Accounts", FormMethod.Post))
     {
-        @Html.AntiForgeryToken()
+
         <div class="mx-auto" style="width: 500px; margin-top: 120px">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <h2 class="mx-auto m-5" style="width: 480px;">  Welcome, Log into your account</h2>
-            <div style="margin-top: 100px">
+            <h2 class="mx-auto m-5" style="width: 550px;">  Welcome, create your school account</h2>
+            <div style="margin-top: 100px; margin-left: 20px">
                 <p class="text-muted mx-auto" style="width: 280px;"> It's our pleasure to have you on board!</p>
 
                 <div class="mx-auto m-2" style="width: 250px;">
                     <input asp-for="Username" class="form-control" placeholder="Enter the name account" style="  height: 30px; font-size: 13px;" />
                 </div>
                 <div class="mx-auto m-2" style="width: 250px;">
-                    <input asp-for="Password" class="form-control" type="password" placeholder="Enter password" style="height: 30px; font-size: 13px;" />
+                    <input class="form-control" type="email" placeholder="Enter school email" style="height: 30px; font-size: 13px;" />
                 </div>
 
+
                 <div class="mx-auto" style="width: 250px;">
-                    <button  type="submit" value="Login" class="btn btn-primary btn-sm " style=" height: 30px; width: 250px; font-size: 13px;">
-                        Login
+                    <button type="button" class="btn btn-primary btn-sm " style=" height: 30px; width: 250px; font-size: 13px;">
+                        Next
                     </button>
+                </div>
+                <div class="mx-auto" style="width: 200px; font-size: 13px; margin-top: 50px">
+                    <p>Already have an account? <a href="#">Sign in</a></p>
                 </div>
             </div>
 
         </div>
-
-       
-
     }
 
     @if (!string.IsNullOrEmpty(ViewData["Error"] as string))
@@ -47,9 +48,5 @@
         <p style="color:red;">@ViewData["Error"]</p>
     }
 
-    
-
-
-    
 </body>
 </html>

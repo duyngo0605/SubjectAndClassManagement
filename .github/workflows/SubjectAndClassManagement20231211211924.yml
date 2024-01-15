@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App SubjectAndClassManagemen
 on:
   push:
     branches:
-    - master
+    - duyngo
 env:
   AZURE_WEBAPP_NAME: SubjectAndClassManagement20231211211924
   AZURE_WEBAPP_PACKAGE_PATH: SubjectAndClassManagement\published
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.SubjectAndClassManagement20231211211924_228B }}
+        publish-profile: ${{ secrets.SubjectAndClassManagement20231211211924_7818 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

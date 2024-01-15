@@ -1,0 +1,150 @@
+﻿@page
+@model SubjectAndClassManagement.Views.TeachGrade.IndexModel
+@{
+}
+
+<style>
+    .form-grade .form-select {
+        width: 220px;
+    }
+
+    .fieldset-wrapper .form-find {
+        clear: both;
+    }
+
+    .fieldset-wrapper .find-grade {
+        clear: both;
+    }
+</style>
+
+<fieldset class="mb-4">
+    <legend>Add grade to student</legend>
+    <div class="fieldset-wrapper">
+
+
+        <div class="form-grade me-3 mb-2 float-start">
+            <label class="mb-2">Session</label>
+            <select class="form-select">
+                <option value="">2023/2024</option>
+                <option value="">2022/2023</option>
+                <option value="">2021/2022</option>
+                <option value="">2020/2021</option>
+            </select>
+        </div>
+
+        <div class="form-grade me-3 mb-2 float-start">
+            <label class="mb-2">Semester</label>
+            <select class="form-select">
+                <option value="">Semester 1</option>
+                <option value="">Semester 2</option>
+
+            </select>
+        </div>
+
+        <div class="form-grade me-3 mb-2 float-start">
+            <label class="mb-2">Subject</label>
+            <select class="form-select">
+                <option value="">OOP</option>
+                <option value="">Data structure and algothirm</option>
+                <option value="">Testing software</option>
+
+            </select>
+        </div>
+
+        <div class="form-grade me-3 mb-2">
+            <label class="mb-2">Class</label>
+            <select class="form-select">
+                <option value="">IT002.M22.PMCL</option>
+                <option value="">IT002.M21.PMCL</option>
+                <option value="">IT002.M23.PMCL</option>
+
+            </select>
+        </div>
+
+        <div class="item-find">
+            <input type="submit" name="fstu" value="View-student" class="form-find">
+        </div>
+    </div>
+</fieldset>
+
+<div class="" style="height: 500px;border: 1px solid black; overflow: scroll;">
+    <p class="mb-2 ms-3">Enter name student</p>
+    <form class="d-flex mb-4 ms-3">
+        <input class="form-control me-2 w-25" type="text" placeholder="Search">
+        <button class="btn btn-primary" type="button">Search</button>
+    </form>
+    <table class="table table-bordered ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>student code</th>
+                <th>Name</th>
+                <th>attendance</th>
+                <th>middle</th>
+                <th>final</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>
+                    1
+                </td>
+
+                <td>
+                    21521976
+                </td>
+
+                <td>
+                    Nguyen Duong Viet Dung
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    1
+                </td>
+
+                <td>
+                    21521976
+                </td>
+
+                <td>
+                    Nguyen Duong Viet Dung
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+
+                <td>
+                    <input type="text">
+                </td>
+            </tr>
+
+            
+
+        </tbody>
+    </table>
+
+
+</div>
+<input type="submit" name="save" value="Save" class="save mt-3">
+
+                

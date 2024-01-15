@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SubjectAndClassManagement.Models.Notification>
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<h1>Search Results</h1>
+
+@if (User.IsInRole("admin"))
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.notify_header)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.notify_day)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.notify_description)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.notify_header)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.notify_day)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.notify_description)
+                    </td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.notify_id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.notify_id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.notify_id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <h1>Notifications</h1>
+
+
+    @foreach (var item in Model)
+    {
+        <div class="my-4 p-4 rounded border border-primary">
+            <h2>@Html.DisplayFor(modelItem => item.notify_header)</h2>
+            <p>@Html.DisplayFor(modelItem => item.notify_day)</p>
+            <p>@Html.DisplayFor(modelItem => item.notify_description)</p>
+            <p>Trân trọng</p>
+        </div>
+    }
+}

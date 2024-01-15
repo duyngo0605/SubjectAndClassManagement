@@ -40,6 +40,11 @@ namespace SubjectAndClassManagement.Models
         public int class_period { get; set; }
 
         [Required]
+        [StringLength(1)]
+        [Display(Name = "First Period")]
+        public string first_period { get; set; }
+
+        [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Start Date")]
