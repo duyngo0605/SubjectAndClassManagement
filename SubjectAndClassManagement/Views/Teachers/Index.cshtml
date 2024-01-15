@@ -3,45 +3,85 @@
 @{
     ViewData["Title"] = "Index";
 }
+        
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+</head>
+<body>
 
-<h1>Index</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col col-sm-3">
+                                <h4 class="title">Teacher Management</h4>
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <div class="btn_group ml-auto">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <a asp-action="Create">
+                                        <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.teacher_name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.email)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.phone_number)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.teacher_name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.phone_number)
+                                        </td>
+                                        @* <td>
+                                    <a asp-action="Edit" asp-route-id="@item.subject_id">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.subject_id">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.subject_id">Delete</a>
+                                    </td> *@
+                                        <td>
+                                            <ul class="action-list">
+                                                <li><a asp-action="Edit" asp-route-id="@item.teacher_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
+                                                <li><a asp-action="Delete" asp-route-id="@item.teacher_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.teacher_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.phone_number)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.teacher_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.phone_number)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.teacher_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.teacher_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.teacher_id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
