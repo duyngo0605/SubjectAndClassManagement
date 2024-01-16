@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SubjectAndClassManagement.Models.Class>
 @{
     ViewData["Title"] = "Timetable";
-    var daysOfWeek = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+    var daysOfWeek = new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 }
 
 <style>
@@ -94,7 +94,7 @@
                     </td>
                 @foreach (var day in daysOfWeek)
                 {
-                    var firstPeriodNumber = period == 10 ? "0" : period.ToString();
+                    var firstPeriodNumber = period == 10 ? 0 : period;
                     var classForPeriodAndDay = Model
                         .FirstOrDefault(c => c.days_of_week == day && c.first_period == firstPeriodNumber);
 
@@ -107,7 +107,7 @@
                                         <br>
                             @classForPeriodAndDay.Subject.subject_description
                                         <br>
-                            @classForPeriodAndDay.Room.room_name
+                            @classForPeriodAndDay.Room.room_id
                                         <br>
                                         Start: @classForPeriodAndDay.start_date.ToString("dd/MM/yy")
                                         <br>
@@ -154,7 +154,7 @@
     private bool IsClassScheduledForPeriod(IEnumerable<SubjectAndClassManagement.Models.Class> classes, string day, int period)
     {
         return classes.Any(c => c.days_of_week == day &&
-                                int.Parse(c.first_period) <= period &&
-                                (int.Parse(c.first_period) + c.class_period - 1) >= period);
+                                c.first_period <= period &&
+                                (c.first_period + c.class_period - 1) >= period);
     }
 }

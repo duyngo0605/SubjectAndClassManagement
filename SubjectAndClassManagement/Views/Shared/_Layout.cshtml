@@ -19,7 +19,7 @@
     <main class="d-flex">
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white sidebar ">
             <div class="text-center text-uppercase fs-4 fw-bold sidebar-heading pt-5 border-bottom">
-                <i class="fa-solid fa-school-flag me-2 "></i>Udemy
+                <i class="fa-solid fa-school-flag me-2 "><a class="text-decoration-none text-light"  asp-controller="Dashboard" asp-action="Index"> Udemy </a></i>
             </div>
 
             <ul class="nav nav-pills flex-column mb-auto ">
@@ -53,6 +53,11 @@
                     </li>
 
                     <li class="nav-item mt-2">
+                        <a class="text-decoration-none text-light" asp-area="" asp-controller="StudentRegistrations" asp-action="Index">Student Registrations</a>
+
+                    </li>
+
+                    <li class="nav-item mt-2">
                         <a class="text-decoration-none text-light" asp-area="" asp-controller="Notifications" asp-action="Index">Notification</a>
 
                     </li>
@@ -67,8 +72,8 @@
                 @if (User.IsInRole("student"))
                 {
                     <li class="nav-item mt-3">
-                        <a class="text-decoration-none text-light" asp-area="" asp-controller="Classes" asp-action="Index">
-                            <i class="fa-solid fa-chalkboard me-3"></i>Classes
+                        <a class="text-decoration-none text-light" asp-area="" asp-controller="Classes" asp-action="Register">
+                            <i class="fa-solid fa-chalkboard me-3"></i>Register Classes
                         </a>
                     </li>
                     <li class="nav-item mt-3">
@@ -100,7 +105,7 @@
                 {
                     <li class="nav-item mt-3">
                         <a class="text-decoration-none text-light" asp-area="" asp-controller="Classes" asp-action="Index">
-                            <i class="fa-solid fa-chalkboard me-3"></i>Classes
+                            <i class="fa-solid fa-chalkboard me-3"></i>Subjects Registration
                         </a>
                     </li>
 

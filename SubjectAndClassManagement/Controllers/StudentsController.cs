@@ -46,6 +46,7 @@ namespace SubjectAndClassManagement.Controllers
             var student = await _context.Students
             .Include(s => s.User)               // Include User
             .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+            .Include(s => s.Registrations)
             .FirstOrDefaultAsync(m => m.student_id == id);
 
             if (student == null)
