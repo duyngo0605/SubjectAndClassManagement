@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SubjectAndClassManagement.Models;
 
+using ClosedXML.Excel;
+using System.Globalization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+
 namespace SubjectAndClassManagement.Controllers
 {
     public class StudentsController : Controller
@@ -71,6 +76,97 @@ namespace SubjectAndClassManagement.Controllers
         {
             _context.Add(student);
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Action for export to Excel
+        public IActionResult ExportToExcel()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Students");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Student ID";
+                worksheet.Cell(currentRow, 2).Value = "Student Name";
+                worksheet.Cell(currentRow, 3).Value = "Email";
+                worksheet.Cell(currentRow, 4).Value = "Phone Number";
+
+                var students = _context.Students.ToList();
+                foreach (var student in students)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = student.student_id;
+                    worksheet.Cell(currentRow, 2).Value = student.student_name;
+                    worksheet.Cell(currentRow, 3).Value = student.email;
+                    worksheet.Cell(currentRow, 4).Value = student.phone_number;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Students.xlsx");
+                }
+            }
+        }
+
+        // Action for importing from Excel
+        [HttpPost]
+        public async Task<IActionResult> ImportFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                ModelState.AddModelError("File", "The file was not uploaded.");
+                return View();
+            }
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheets.First();
+                        var rowCount = worksheet.RowCount();
+
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+                            var studentId = worksheet.Cell(row, 1).Value.ToString();
+                            var student = await _context.Students.FindAsync(studentId);
+
+                            if (student == null)
+                            {
+                                // Student does not exist, add a new one
+                                student = new Student
+                                {
+                                    student_id = studentId,
+                                    student_name = worksheet.Cell(row, 2).Value.ToString(),
+                                    email = worksheet.Cell(row, 3).Value.ToString(),
+                                    phone_number = worksheet.Cell(row, 4).Value.ToString()
+                                };
+                                _context.Students.Add(student);
+                            }
+                            else
+                            {
+                                // Student already exists, update the existing one
+                                student.student_name = worksheet.Cell(row, 2).Value.ToString();
+                                student.email = worksheet.Cell(row, 3).Value.ToString();
+                                student.phone_number = worksheet.Cell(row, 4).Value.ToString();
+                                _context.Students.Update(student);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log exception
+                ModelState.AddModelError("File", "An error occurred while importing the file: " + ex.Message);
+                return View();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -181,5 +277,7 @@ namespace SubjectAndClassManagement.Controllers
         {
           return (_context.Students?.Any(e => e.student_id == id)).GetValueOrDefault();
         }
+
+
     }
 }

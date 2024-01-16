@@ -25,6 +25,18 @@
                             <div class="col-sm-9 text-right">
                                 <div class="btn_group ml-auto">
                                     <input type="text" class="form-control" placeholder="Search">
+                                    <!-- import -->
+                                        <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="fileUpload">Import Students:</label>
+                                                <input type="file" id="fileUpload" name="file" class="form-control-file" />
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Import</button>
+                                        </form>
+
+                                    <!-- export -->
+                                    <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
+
                                     <a asp-action="Create">
                                         <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
                                     </a>
