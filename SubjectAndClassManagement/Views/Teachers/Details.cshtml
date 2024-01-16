@@ -7,55 +7,112 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Teacher</h4>
+    
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.teacher_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.teacher_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.phone_number)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.phone_number)
-        </dd>
-        @* Display Profile Information *@
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Profile.date_of_birth)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Profile.gender)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Profile.gender)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Profile.address)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Profile.address)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Profile.citizen_id_card)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Profile.citizen_id_card)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.teacher_id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("admin"))
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.teacher_name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.teacher_name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.phone_number)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.phone_number)
+            </dd>
+            @* Display Profile Information *@
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.User.Profile.date_of_birth)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.User.Profile.gender)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.User.Profile.gender)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.User.Profile.address)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.User.Profile.address)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.User.Profile.citizen_id_card)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.User.Profile.citizen_id_card)
+            </dd>
+        </dl>
+
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.teacher_id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+
+    }
+    @if (User.IsInRole("teacher"))
+    {
+        <section class="container">
+
+            <form class="row g-3">
+
+                
+                <div class="col-8">
+                    <label asp-for="teacher_name" for="inputName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" asp-for="teacher_name" id="inputAddress" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="User.Profile.gender" class="form-label">Gender</label>
+                    <input type="text" class="form-control" asp-for="User.Profile.gender" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="email" for="inputEmail4" class="form-label">Email</label>
+                    <input type="email" class="form-control" asp-for="email" id="inputEmail4" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="phone_number" class="form-label">Phone number</label>
+                    <input type="text" class="form-control" asp-for="phone_number" id="inputPhone4" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="User.Profile.date_of_birth" class="form-label">Date of birth</label>
+                    <input type="text" class="form-control" asp-for="User.Profile.date_of_birth" id="inputPhone4" readonly>
+                </div>
+
+
+                <div class="col-md-6">
+                    <label asp-for="User.Profile.address" class="form-label">Address</label>
+                    <input type="text" class="form-control" asp-for="User.Profile.address" id="inputAddress2" readonly>
+                </div>
+
+                
+
+                <div class="col-2">
+                    <button class="p-2 rounded-2" asp-action="Edit" asp-route-id="@Model?.teacher_id">Update information</button>
+                </div>
+
+                <div class="col-2">
+                    <button class="p-2 rounded-2" asp-area="" asp-controller="UpdatePass" asp-action="Index">Update password</button>
+                </div>
+
+
+            </form>
+
+
+
+        </section>
+    }
+
 </div>
