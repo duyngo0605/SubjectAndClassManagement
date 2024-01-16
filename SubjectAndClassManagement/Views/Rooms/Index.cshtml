@@ -4,44 +4,85 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+</head>
+<body>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.room_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.room_capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.building_name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.room_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.room_capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.building_name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.room_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.room_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.room_id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col col-sm-3">
+                                <h4 class="title">Classroom</h4>
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <div class="btn_group ml-auto">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <a asp-action="">
+                                        <button class="btn" type="button" style="height: 40px; width: 100px">Import</button>
+                                    </a>
+                                    <a asp-action="">
+                                        <button class="btn" type="button" style="height: 40px; width: 100px">Export</button>
+                                    </a>
+                                    <a asp-action="Create">
+                                        <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.room_name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.room_capacity)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.building_name)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.room_name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.room_capacity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.building_name)
+                                        </td>
+                                        <td>
+                                            <ul class="action-list">
+                                                <li><a asp-action="Edit" asp-route-id="@item.room_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
+                                                <li><a asp-action="Delete" asp-route-id="@item.room_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
