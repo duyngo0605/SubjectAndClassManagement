@@ -1,4 +1,4 @@
-@model SubjectAndClassManagement.Models.Room
+@model SubjectAndClassManagement.Models.Student
 
 @{
     ViewData["Title"] = "Details";
@@ -7,30 +7,102 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Room</h4>
+    <h4>Student</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.room_name)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.student_name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.room_name)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.student_name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.room_capacity)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.email)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.room_capacity)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.email)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.building_name)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.phone_number)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.building_name)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.phone_number)
         </dd>
+        @* Display Profile Information *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.date_of_birth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.gender)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.gender)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Profile.citizen_id_card)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Profile.citizen_id_card)
+        </dd>
+
+
     </dl>
+
+    @* Display Classes Registrations Information *@
+    <h4>Classes Registered</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Registrations date
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Class
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Registrations)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.registration_date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Student.student_id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Class.class_id)
+                    </td>
+                    <td>
+                        <a asp-controller="StudentRegistrations" asp-action="Edit" asp-route-id="@item.registration_id">Edit</a> |
+                        <a asp-controller="StudentRegistrations" asp-action="Details" asp-route-id="@item.registration_id">Details</a> |
+                        <a asp-controller="StudentRegistrations" asp-action="Delete" asp-route-id="@item.registration_id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.room_id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.student_id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
