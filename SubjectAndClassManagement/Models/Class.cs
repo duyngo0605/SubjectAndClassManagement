@@ -26,6 +26,11 @@ namespace SubjectAndClassManagement.Models
         [Display(Name = "Teacher ID")]
         public string teacher_id { get; set; }
 
+
+        [Required]
+        [Display(Name = " Max Number of Members")]
+        public int max_number_of_members { get; set; }
+
         [Required]
         [Display(Name = "Number of Members")]
         public int number_of_members { get; set; }
@@ -40,9 +45,8 @@ namespace SubjectAndClassManagement.Models
         public int class_period { get; set; }
 
         [Required]
-        [StringLength(1)]
         [Display(Name = "First Period")]
-        public string first_period { get; set; }
+        public int first_period { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

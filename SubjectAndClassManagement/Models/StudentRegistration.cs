@@ -6,7 +6,6 @@ namespace SubjectAndClassManagement.Models
     public class StudentRegistration
     {
         [Key]
-        [StringLength(10)]
         [Display(Name = "Registration ID")]
         public string registration_id { get; set; }
 
