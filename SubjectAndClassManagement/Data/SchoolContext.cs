@@ -71,10 +71,6 @@ public class SchoolContext : DbContext
             .Property(r => r.room_id)
             .HasMaxLength(10);
 
-        modelBuilder.Entity<Room>()
-            .Property(r => r.room_name)
-            .HasMaxLength(255);
-
         modelBuilder.Entity<Teacher>()
             .Property(t => t.teacher_id)
             .HasMaxLength(10);

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SubjectAndClassManagement.Models
 {
@@ -26,6 +27,10 @@ namespace SubjectAndClassManagement.Models
 
         [Display(Name = "Teacher ID")]
         public string teacher_id { get; set; } = string.Empty;
+
+        [Required]
+        [Display(Name="Status")]
+        public string status { get; set; } = "active";
 
         // Navigation properties
         public Student Student { get; set; }

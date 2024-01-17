@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -148,9 +149,117 @@ namespace SubjectAndClassManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("registration_id,student_id,registration_date,status,reason")] StudentRegistration studentRegistration, string[] selectedClasses)
+        {
+            var studentId = User.FindFirstValue("username");
+
+            string success = "";
+            string error = "";
+            if (selectedClasses != null && selectedClasses.Length > 0)
+            {
+                foreach (var classId in selectedClasses)
+                {
+                    // Kiểm tra xem lớp đã đăng ký có trùng lịch với các lớp đã đăng ký trước đó không
+                    if (IsClassScheduleConflict(studentId, classId))
+                    {
+                        // Nếu có trùng lịch, bạn có thể thực hiện các xử lý hoặc hiển thị thông báo lỗi
+                        error+=$"Class schedule conflict for class {classId}. Registration failed.\n";
+                        break;
+                    }
+
+                    success += $"Successfully registered for class {classId}.\n";
+                    var newStudentRegistration = new StudentRegistration
+                    {
+                        registration_id = studentId + "_" + classId,
+                        student_id = studentId,
+                        class_id = classId,
+                        registration_date = DateTime.Now,
+                        status = "Registered",
+                        reason = ""
+                    };
+
+                    _context.Add(newStudentRegistration);
+                    await _context.SaveChangesAsync();
+                }
+                if (success != "")
+                    TempData["Success"] = success;
+                if (error != "")
+                    TempData["Error"] = error;
+            }
+
+            return RedirectToAction("Register", "Classes");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Unregister(string[] selectedClasses)
+        {
+            var studentId = User.FindFirstValue("username");
+            string success = "";
+            if (selectedClasses != null && selectedClasses.Length > 0)
+            {
+                foreach (var classId in selectedClasses)
+                {
+                    var registration_id = studentId + "_" + classId;
+                    var studentRegistration = await _context.StudentRegistrations.FindAsync(registration_id);
+                    if (studentRegistration != null)
+                    {
+                        _context.StudentRegistrations.Remove(studentRegistration);
+                        success += $"Successfully unregistered for class {classId}.\n";
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                if (success != "")
+                    TempData["Success"] = success;
+            }
+
+            return RedirectToAction("Register", "Classes");
+        }
+
+
+
         private bool StudentRegistrationExists(string id)
         {
           return (_context.StudentRegistrations?.Any(e => e.registration_id == id)).GetValueOrDefault();
+        }
+
+        private bool IsClassScheduleConflict(string studentId, string classId)
+        {
+            // Lấy thông tin về lớp học mà sinh viên đang cố gắng đăng ký
+            var newClass = _context.Classes
+                .Include(s => s.Room)
+                .FirstOrDefault(c => c.class_id == classId);
+
+            // Lấy danh sách các lớp học đã đăng ký
+            var registeredClasses = _context.Classes
+                .Include(s => s.Room)
+                .Include(s => s.Subject)
+                .Include(s => s.Teacher)
+                .Where(c => _context.StudentRegistrations.Any(sr => sr.class_id == c.class_id && sr.student_id == studentId))
+                .ToList();
+
+            // Kiểm tra xem lớp mới có trùng lịch với bất kỳ lớp đã đăng ký nào không
+            foreach (var registeredClass in registeredClasses)
+            {
+                if (registeredClass.class_id != classId)
+                {
+                    // Kiểm tra xem có trùng lịch không
+                    if (registeredClass.days_of_week == newClass.days_of_week)
+                    {
+                        if (newClass.first_period < registeredClass.first_period + registeredClass.class_period &&
+                            registeredClass.first_period < newClass.first_period + newClass.class_period)
+                        {
+                            return true; // Có trùng lịch
+                        }
+                    }
+                }
+            }
+
+            return false; // Không có trùng lịch
         }
     }
 }

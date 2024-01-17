@@ -11,11 +11,6 @@ namespace SubjectAndClassManagement.Models
         public string room_id { get; set; }
 
         [Required]
-        [StringLength(255)]
-        [Display(Name = "Room Name")]
-        public string room_name { get; set; }
-
-        [Required]
         [Display(Name = "Room Capacity")]
         public int room_capacity { get; set; }
 
