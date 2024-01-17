@@ -55,7 +55,14 @@
                     {
                         <tr>
                             <td>
+                            @if (item.number_of_members >= item.max_number_of_members)
+                            {
+                                <input class="form-check-input" type="checkbox" disabled name="selectedClasses" value="@item.class_id">
+                            }
+                            else 
+                            {
                                 <input class="form-check-input" type="checkbox" name="selectedClasses" value="@item.class_id">
+                            }
                             </td>
                             <td>
                                 @item.class_id
