@@ -59,8 +59,16 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("username,password,user_type,student_id,teacher_id, status")] User user)
+        public async Task<IActionResult> Create([Bind("password,user_type,student_id,teacher_id, status")] User user)
         {
+            if (user.student_id != null)
+            {
+                user.username = user.student_id;
+            }
+            else if (user.teacher_id != null)
+            {
+                user.username = user.teacher_id;
+            }    
             _context.Add(user);
             await _context.SaveChangesAsync();
             _context.Add(user.Profile = new Profile(user.username));

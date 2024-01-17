@@ -62,6 +62,24 @@ BEGIN
     INNER JOIN inserted ON Classes.class_id = inserted.class_id;
 END;
 
+-- Tạo hàm kiểm tra
+CREATE FUNCTION dbo.CheckOpenSessionCount()
+RETURNS INT
+AS
+BEGIN
+    DECLARE @OpenSessionCount INT;
+    SELECT @OpenSessionCount = COUNT(*)
+    FROM RegistrationSessions
+    WHERE status = 'open';
+
+    RETURN @OpenSessionCount;
+END;
+
+-- Tạo ràng buộc CHECK sử dụng hàm kiểm tra
+ALTER TABLE RegistrationSessions
+ADD CONSTRAINT CK_MaxOneOpenSession
+CHECK (dbo.CheckOpenSessionCount() <= 1);
+
 
 
 CREATE TABLE StudentRegistrations (
@@ -267,3 +285,4 @@ select * from Students
 select * from Users
 select * from Profiles
 select * from RegistrationSessions
+select * from Classes

@@ -185,12 +185,25 @@ namespace SubjectAndClassManagement.Controllers
         {
             var studentId = User.FindFirstValue("username");
 
-            // Lấy danh sách các lớp học đã đăng ký
+            // Get the currently open registration session
+            var openSession = await _context.RegistrationSessions
+                .FirstOrDefaultAsync(s => s.status == "open");
+
+            if (openSession == null)
+            {
+                TempData["NoOpenSession"] = "The registration dat has not yet arrived, please come back later";
+                return View();
+            }
+          
+
+            // Lấy danh sách các lớp học thuộc phiên đăng ký học phần đang được mở
             var registeredClasses = _context.Classes
                 .Include(s => s.Room)
                 .Include(s => s.Subject)
                 .Include(s => s.Teacher)
-                .Where(c => _context.StudentRegistrations.Any(sr => sr.class_id == c.class_id && sr.student_id == studentId))
+                .Where(c => _context.StudentRegistrations.Any(sr => sr.class_id == c.class_id && sr.student_id == studentId) &&
+                            c.semester == openSession.semester &&
+                            c.academic_year == openSession.academic_year)
                 .ToList();
 
             // Lấy danh sách các lớp học chưa đăng ký
@@ -198,7 +211,9 @@ namespace SubjectAndClassManagement.Controllers
                 .Include(s => s.Room)
                 .Include(s => s.Subject)
                 .Include(s => s.Teacher)
-                .Where(c => !_context.StudentRegistrations.Any(sr => sr.class_id == c.class_id && sr.student_id == studentId))
+                .Where(c => !_context.StudentRegistrations.Any(sr => sr.class_id == c.class_id && sr.student_id == studentId) &&
+                            c.semester == openSession.semester &&
+                            c.academic_year == openSession.academic_year)
                 .ToList();
 
             ViewBag.RegisteredClasses = registeredClasses;
@@ -206,6 +221,7 @@ namespace SubjectAndClassManagement.Controllers
 
             return View();
         }
+
 
         public IActionResult RegisteredClasses()
         {
