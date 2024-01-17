@@ -31,12 +31,15 @@ namespace SubjectAndClassManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (isValidAccount(model))
+            string message;
+            if (isValidAccount(model, out message))
             {
                 CreateAuthenticationAndSession(model.Username);
-                return RedirectToAction("Index", "Dashboard"); //Access valid
+                return RedirectToAction("Index", "Dashboard");
+
             }
-            TempData["Message"] = "Login Failed!";
+
+            TempData["Message"] = message;
             return View(model); //Invalid Access
             //2 Tham số trong hàm này phải trùng tên với tên biến đã đặt ở file Access.cshtml
         }
@@ -58,6 +61,8 @@ namespace SubjectAndClassManagement.Controllers
                     claims.Add(new Claim("StudentId", user.student_id));
                 if (!string.IsNullOrEmpty(user.teacher_id))
                     claims.Add(new Claim("TeacherId", user.teacher_id));
+                if (!string.IsNullOrEmpty(user.status))
+                    claims.Add(new Claim("Status", user.status));
             }
             
 
@@ -73,26 +78,36 @@ namespace SubjectAndClassManagement.Controllers
             //Hàm này để xác thực(Authenticate) và tạo phiên(Session) đăng nhập
         }
 
-        private bool isValidAccount(LoginViewModel model)
+        private bool isValidAccount(LoginViewModel model, out string message)
         {
+            var user = _context.Users.FirstOrDefault(u => u.username == model.Username);
 
-            var user = _context.Users.FirstOrDefault(u => u.username == model.Username && u.password == model.Password);
+            if (user == null)
+            {
+                // Account does not exist
+                message = "Account does not exist.";
+                return false;
+            }
 
-            if (user == null) return false;
+            if (user.password != model.Password)
+            {
+                // Incorrect password
+                message = "Incorrect password.";
+                return false;
+            }
+
+            if (user.status == "locked")
+            {
+                // Account is locked
+                message = "Account is locked.";
+                return false;
+            }
+
+            // Valid account
+            message = "Login successful.";
             return true;
         }
 
-        public IActionResult SomeAction()
-        {
-            // Lấy ra giá trị của username từ claims
-            string username = User.FindFirstValue("username");
 
-            // Lấy ra giá trị của role từ claims
-            string role = User.FindFirstValue("OtherProperties");
-
-            // Thực hiện các hành động khác với thông tin người dùng
-
-            return View();
-        }
     }
 }

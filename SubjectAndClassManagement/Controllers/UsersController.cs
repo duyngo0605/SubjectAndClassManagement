@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -58,7 +59,7 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("username,password,user_type,student_id,teacher_id")] User user)
+        public async Task<IActionResult> Create([Bind("username,password,user_type,student_id,teacher_id, status")] User user)
         {
             _context.Add(user);
             await _context.SaveChangesAsync();
@@ -90,36 +91,30 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("username,password,user_type,student_id,teacher_id")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("username,password,user_type,student_id,teacher_id, status")] User user)
         {
             if (id != user.username)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.username))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(user);
+                await _context.SaveChangesAsync();
             }
-            ViewData["student_id"] = new SelectList(_context.Students, "student_id", "student_id", user.student_id);
-            ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", user.teacher_id);
-            return View(user);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.username))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Delete/5
@@ -165,6 +160,27 @@ namespace SubjectAndClassManagement.Controllers
         private bool UserExists(string id)
         {
           return (_context.Users?.Any(e => e.username == id)).GetValueOrDefault();
+        }
+
+        public static string GeneratePassword()
+        {
+            int length = 12;
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+";
+            char[] password = new char[length];
+
+            using (RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider())
+            {
+                byte[] randomBytes = new byte[length];
+                rngCsp.GetBytes(randomBytes);
+
+                for (int i = 0; i < length; i++)
+                {
+                    int index = randomBytes[i] % validChars.Length;
+                    password[i] = validChars[index];
+                }
+            }
+
+            return new string(password);
         }
     }
 }
