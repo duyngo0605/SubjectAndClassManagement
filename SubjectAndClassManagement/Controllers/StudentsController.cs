@@ -51,6 +51,7 @@ namespace SubjectAndClassManagement.Controllers
             var student = await _context.Students
             .Include(s => s.User)               // Include User
             .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
+            .Include(s => s.Registrations)
             .FirstOrDefaultAsync(m => m.student_id == id);
 
             if (student == null)
@@ -72,7 +73,7 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("student_id,student_name,email,phone_number")] Student student)
+        public async Task<IActionResult> Create([Bind("student_id,student_name,email,phone_number, academic_year")] Student student)
         {
             _context.Add(student);
             await _context.SaveChangesAsync();
@@ -194,13 +195,17 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number, User")] Student student)
+        public async Task<IActionResult> Edit(string id, [Bind("student_id,student_name,email,phone_number, academic_year, User")] Student student)
         {
             try
             {
-                var profile = student.User.Profile;
+                
                 _context.Update(student);
-                _context.Update(profile);
+                if (User.IsInRole("student"))
+                { 
+                    var profile = student.User.Profile; 
+                    _context.Update(profile); 
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

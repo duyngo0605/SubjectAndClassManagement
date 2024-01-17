@@ -4,6 +4,8 @@
     ViewData["Title"] = "Create";
 }
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <h1>Create</h1>
 
 <h4>Room</h4>
@@ -18,18 +20,19 @@
                 <span asp-validation-for="room_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="room_name" class="control-label"></label>
-                <input asp-for="room_name" class="form-control" />
-                <span asp-validation-for="room_name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="room_capacity" class="control-label"></label>
                 <input asp-for="room_capacity" class="form-control" />
                 <span asp-validation-for="room_capacity" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="building_name" class="control-label"></label>
-                <input asp-for="building_name" class="form-control" />
+                <select asp-for="building_name" class="form-control">
+                    <option value="A">Tòa A</option>
+                    <option value="B">Tòa B</option>
+                    <option value="C">Tòa C</option>
+                    <option value="D">Tòa D</option>
+                    <option value="E">Tòa E</option>
+                </select>
                 <span asp-validation-for="building_name" class="text-danger"></span>
             </div>
            
@@ -47,3 +50,29 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    $(document).ready(function () {
+        // Attach a submit handler to the form
+        $("form").submit(function (event) {
+
+            var room_id = $("#room_id").val();
+            var building_name = $("#building_name").val()
+            var room_capacity = $("#room_capacity").val();
+
+            if (!room_id.startsWith(building_name)) {
+                // Display an alert and prevent form submission
+                alert("Room ID must start with the Buidling Name.");
+                event.preventDefault();
+            }
+
+            if (room_capacity <= 40)
+            {
+                alert("Room Capacity must be larger than 40.");
+                event.preventDefault();
+            }
+
+
+        });
+    });
+</script>

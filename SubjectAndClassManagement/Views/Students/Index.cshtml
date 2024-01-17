@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SubjectAndClassManagement.Models.Student>
+@model IEnumerable<SubjectAndClassManagement.Models.Student>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student</title>
+    <title>Subject</title>
     <link rel="stylesheet" href="~/css/StyleSheet.css" />
 </head>
 <body>
@@ -20,12 +20,13 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col col-sm-3">
-                                <h4 class="title">Student Management</h4>
+                                <h4 class="title">Subject Management</h4>
                             </div>
                             <div class="col-sm-9 text-right">
                                 <div class="btn_group ml-auto">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                    <!-- import -->
+                                    <div class="btn_group ml-auto">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <!-- import -->
                                         <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <label for="fileUpload">Import Students:</label>
@@ -34,12 +35,13 @@
                                             <button type="submit" class="btn btn-success">Import</button>
                                         </form>
 
-                                    <!-- export -->
-                                    <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
+                                        <!-- export -->
+                                        <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
 
-                                    <a asp-action="Create">
-                                        <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
-                                    </a>
+                                        <a asp-action="Create">
+                                            <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -98,3 +100,4 @@
 
 </body>
 </html>
+
