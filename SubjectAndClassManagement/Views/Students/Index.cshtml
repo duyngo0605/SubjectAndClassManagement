@@ -26,14 +26,20 @@
                                 <div class="btn_group ml-auto">
                                     <div class="btn_group ml-auto">
                                         <input type="text" class="form-control" placeholder="Search">
-                                        <a asp-action="">
-                                            <button class="btn" type="button" style="height: 40px; width: 100px">Import</button>
-                                        </a>
-                                        <a asp-action="">
-                                            <button class="btn" type="button" style="height: 40px; width: 100px">Export</button>
-                                        </a>
+                                        <!-- import -->
+                                        <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="fileUpload">Import Students:</label>
+                                                <input type="file" id="fileUpload" name="file" class="form-control-file" />
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Import</button>
+                                        </form>
+
+                                        <!-- export -->
+                                        <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
+
                                         <a asp-action="Create">
-                                            <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
+                                            <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
                                         </a>
                                     </div>
                                 </div>

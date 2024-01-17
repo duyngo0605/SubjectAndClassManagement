@@ -1,4 +1,4 @@
-CREATE TABLE Rooms (
+﻿CREATE TABLE Rooms (
     room_id NVARCHAR(10) PRIMARY KEY,
     room_capacity INT CHECK (room_capacity >= 40),
     building_name NVARCHAR(255)
@@ -75,6 +75,7 @@ CREATE TABLE StudentRegistrations (
     FOREIGN KEY (class_id) REFERENCES Classes(class_id)
 );
 
+
 CREATE TRIGGER trg_UpdateNumberOfMembers
 ON StudentRegistrations
 AFTER INSERT, DELETE
@@ -84,6 +85,49 @@ BEGIN
     UPDATE Classes
     SET number_of_members = ISNULL((SELECT COUNT(*) FROM StudentRegistrations WHERE class_id = Classes.class_id), 0)
     WHERE class_id IN (SELECT class_id FROM inserted UNION SELECT class_id FROM deleted);
+END;
+
+
+CREATE TABLE RegistrationSessions (
+    session_id NVARCHAR(30) PRIMARY KEY,
+    start_date DATETIME,
+    end_date DATETIME,
+	semester INT,
+	academic_year NVARCHAR(20),
+    status NVARCHAR(20) CHECK (status IN ('open', 'closed')),
+);
+
+alter table RegistrationSessions add constraint CHECK_date
+CHECK (start_date<=end_date)
+
+CREATE TRIGGER trg_GenerateSessionId
+ON RegistrationSessions
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @nextSessionId NVARCHAR(30); 
+
+    -- Tìm session_id cuối cùng trong bảng
+    SELECT TOP 1 @nextSessionId = session_id
+    FROM RegistrationSessions
+    ORDER BY session_id DESC;
+
+    -- Trích xuất số thứ tự từ session_id cuối cùng
+    DECLARE @lastIndex INT;
+    SET @lastIndex = CAST(SUBSTRING(@nextSessionId, LEN('RegistrationSessions') + 1, LEN(@nextSessionId)) AS INT);
+
+    -- Tạo session_id mới
+    DECLARE @newIndex INT;
+    SET @newIndex = ISNULL(@lastIndex + 1, 1);
+    DECLARE @newSessionId NVARCHAR(30);
+    SET @newSessionId = 'RegistrationSessions' + RIGHT('000' + CAST(@newIndex AS NVARCHAR(3)), 3);
+
+    -- Cập nhật session_id trong bảng inserted
+    UPDATE RegistrationSessions
+    SET session_id = @newSessionId
+    WHERE session_id IN (SELECT session_id FROM inserted);
 END;
 
 
@@ -222,3 +266,4 @@ insert into Users values('admin', 'admin', 'admin', null, null, 'active')
 select * from Students
 select * from Users
 select * from Profiles
+select * from RegistrationSessions
