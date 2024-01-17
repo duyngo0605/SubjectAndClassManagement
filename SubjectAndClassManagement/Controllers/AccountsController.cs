@@ -78,11 +78,46 @@ namespace SubjectAndClassManagement.Controllers
             //Hàm này để xác thực(Authenticate) và tạo phiên(Session) đăng nhập
         }
 
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        {
+            // Validate and change the password
+            if (ModelState.IsValid)
+            {
+                // Fetch user from the database using the current username
+                var user = _context.Users.FirstOrDefault(u => u.username == User.FindFirstValue("username"));
+
+                // Verify the old password
+                if (user.password == model.OldPassword)
+                {
+                    // Update the password
+                    user.password = model.NewPassword;
+                    _context.SaveChanges();
+
+                    TempData["Message"] = "Password changed successfully.";
+                    return RedirectToAction("Index", "Dashboard");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Incorrect old password.");
+                }
+            }
+
+            return View(model);
+        }
+
+
         private bool isValidAccount(LoginViewModel model, out string message)
         {
             var user = _context.Users.FirstOrDefault(u => u.username == model.Username);
 
-            if (user == null)
+            if (user.username != model.Username || user == null)
             {
                 // Account does not exist
                 message = "Account does not exist.";

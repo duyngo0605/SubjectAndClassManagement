@@ -153,6 +153,62 @@ CREATE TABLE Profiles
     citizen_id_card NVARCHAR(12),
 )
 
+CREATE TRIGGER trg_CreateUserAndProfile_Student
+ON Students
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @userId NVARCHAR(10);
+    DECLARE @password NVARCHAR(255);
+
+    -- Get the inserted student_id
+    SELECT @userId = student_id
+    FROM inserted;
+
+    -- Generate a random password
+    SET @password = CAST(FLOOR(RAND() * 1000000) AS NVARCHAR(255)); -- You may need to use a more secure method for password generation
+
+    -- Insert into Users table
+    INSERT INTO Users (username, password, user_type, student_id, status)
+    VALUES (@userId, @password, 'student', @userId, 'active');
+
+    -- Insert into Profiles table
+    INSERT INTO Profiles (username)
+    VALUES (@userId);
+
+END;
+
+CREATE TRIGGER trg_CreateUserAndProfile_Teacher
+ON Teachers
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @userId NVARCHAR(10);
+    DECLARE @password NVARCHAR(255);
+
+    -- Get the inserted teacher_id
+    SELECT @userId = teacher_id
+    FROM inserted;
+
+    -- Generate a random password
+    SET @password = CAST(FLOOR(RAND() * 1000000) AS NVARCHAR(255)); -- You may need to use a more secure method for password generation
+
+    -- Insert into Users table
+    INSERT INTO Users (username, password, user_type, teacher_id, status)
+    VALUES (@userId, @password, 'teacher', @userId, 'active');
+
+    -- Insert into Profiles table
+    INSERT INTO Profiles (username)
+    VALUES (@userId);
+
+END;
+
+
+
 create table Notifications
 (
     notify_id INT IDENTITY(1,1) PRIMARY key,
@@ -162,3 +218,7 @@ create table Notifications
 )
 
 insert into Users values('admin', 'admin', 'admin', null, null, 'active')
+
+select * from Students
+select * from Users
+select * from Profiles

@@ -14,7 +14,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="username" class="control-label"></label>
-                <input asp-for="username" class="form-control" />
+                <div class="input-group">
+                    <input asp-for="password" class="form-control" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-secondary" id="btnAutoGeneratePassword">Auto Generate</button>
+                    </span>
+                </div>
                 <span asp-validation-for="username" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -78,5 +83,26 @@
 
         // Call the function on page load to set initial state
         updateUserType();
+
+        // Function to generate a random password
+        function generateRandomPassword(length) {
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-_=+";
+            var password = "";
+            for (var i = 0; i < length; i++) {
+                var randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset.charAt(randomIndex);
+            }
+            return password;
+        }
+
+        // Function to handle the Auto Generate Password button click
+        function autoGeneratePassword() {
+            var generatedPassword = generateRandomPassword(8); // You can adjust the length as needed
+            $("#password").val(generatedPassword);
+        }
+
+        // Bind the function to the click event of the Auto Generate Password button
+        $("#btnAutoGeneratePassword").click(autoGeneratePassword);
+
     </script>
 }

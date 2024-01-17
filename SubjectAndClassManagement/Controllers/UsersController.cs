@@ -161,26 +161,5 @@ namespace SubjectAndClassManagement.Controllers
         {
           return (_context.Users?.Any(e => e.username == id)).GetValueOrDefault();
         }
-
-        public static string GeneratePassword()
-        {
-            int length = 12;
-            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+";
-            char[] password = new char[length];
-
-            using (RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider())
-            {
-                byte[] randomBytes = new byte[length];
-                rngCsp.GetBytes(randomBytes);
-
-                for (int i = 0; i < length; i++)
-                {
-                    int index = randomBytes[i] % validChars.Length;
-                    password[i] = validChars[index];
-                }
-            }
-
-            return new string(password);
-        }
     }
 }
