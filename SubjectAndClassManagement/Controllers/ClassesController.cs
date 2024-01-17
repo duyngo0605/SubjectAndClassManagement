@@ -66,7 +66,7 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("class_id,subject_id,room_id,teacher_id,max_number_of_members, number_of_members,days_of_week,first_period,class_period,start_date,end_date,year")] Class sclass)
+        public async Task<IActionResult> Create([Bind("class_id,subject_id,room_id,teacher_id,max_number_of_members, number_of_members,days_of_week,first_period,class_period,start_date,end_date,semester, academic_year")] Class sclass)
         {
             if (IsClassConflict(sclass))
             {
@@ -105,7 +105,7 @@ namespace SubjectAndClassManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("class_id,subject_id,room_id,teacher_id,max_number_of_members,number_of_members,days_of_week,first_period,class_period,start_date,end_date,year")] Class sclass)
+        public async Task<IActionResult> Edit(string id, [Bind("class_id,subject_id,room_id,teacher_id,max_number_of_members,number_of_members,days_of_week,first_period,class_period,start_date,end_date,semester, academic_year")] Class sclass)
         {
             if (id != sclass.class_id)
             {

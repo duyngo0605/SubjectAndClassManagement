@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SubjectAndClassManagement.Models
@@ -59,6 +60,13 @@ namespace SubjectAndClassManagement.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "End Date")]
         public DateTime end_date { get; set; }
+
+        [Required]
+        [DisplayName("Semester")]
+        public int semester {  get; set; }
+
+        [DisplayName("Academic Year")]
+        public string academic_year {  get; set; }
 
         public virtual Subject Subject { get; set; }
         public virtual Room Room { get; set; }
