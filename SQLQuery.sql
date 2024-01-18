@@ -316,10 +316,62 @@ select * from StudentResults
 select * from StudentRegistrations
 select * from ResultColumns
 
+delete from StudentResults where registration_id = '21521976_SE100.O11'
+
 drop table ResultColumn
+
 
 alter table StudentResults alter column grade FLOAT
 
 insert into StudentResults values('R_21521999_SE100.O11', '21521999_SE100.O11', 5.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Attendance', 5.0, 0.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Final', 6.0, 0.5)
+update ResultColumns set grade = 10.0 where column_name = 'Final'
+
+CREATE TRIGGER trg_AutoSetStudentResultGrade
+ON ResultColumns
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update the corresponding grade in StudentResults table
+    UPDATE StudentResults
+    SET grade = (
+        SELECT SUM(rc.grade * rc.weight)
+        FROM ResultColumns rc
+        WHERE rc.student_results_id = StudentResults.student_results_id
+    )
+    FROM StudentResults
+    INNER JOIN inserted ON StudentResults.student_results_id = inserted.student_results_id;
+END;
+
+CREATE FUNCTION dbo.CheckTotalWeight(@student_results_id NVARCHAR(20))
+RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @totalWeight FLOAT;
+
+    SELECT @totalWeight = SUM(weight)
+    FROM ResultColumns
+    WHERE student_results_id = @student_results_id;
+
+    RETURN @totalWeight;
+END;
+
+ALTER TABLE ResultColumns
+ADD CONSTRAINT CK_TotalWeight CHECK (dbo.CheckTotalWeight(student_results_id) <= 1);
+
+-- Trigger to automatically create StudentResults when a new StudentRegistration is inserted
+CREATE TRIGGER trg_CreateStudentResult
+ON StudentRegistrations
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Insert into StudentResults for each inserted StudentRegistration
+    INSERT INTO StudentResults (student_results_id, registration_id, grade)
+    SELECT 'R_' + CAST(inserted.registration_id AS NVARCHAR(20)), inserted.registration_id, NULL
+    FROM inserted;
+END;

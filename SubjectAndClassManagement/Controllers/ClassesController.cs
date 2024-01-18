@@ -23,12 +23,27 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
-            var allClasses = _context.Classes
+
+            if (User.IsInRole("teacher"))
+            {
+                var allClasses = _context.Classes
                     .Include(s => s.Room)
                     .Include(s => s.Subject)
-                    .Include(s => s.Teacher);
+                    .Include(s => s.Teacher)
+                    .Where(s=> s.teacher_id== User.FindFirstValue("username"));
+                return View(await allClasses.ToListAsync());
+            }
+            else
+            {
+                var allClasses = _context.Classes
+                   .Include(s => s.Room)
+                   .Include(s => s.Subject)
+                   .Include(s => s.Teacher);
 
-            return View(await allClasses.ToListAsync());
+                return View(await allClasses.ToListAsync());
+            }
+          
+
         }
 
         // GET: Classes/Details/5
@@ -274,7 +289,10 @@ namespace SubjectAndClassManagement.Controllers
                 .Select(sr => sr.Student)
                 .ToListAsync();
 
-            ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.Room.room_id}";
+            ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.class_id}";
+            TempData["ClassId"] = sclass.class_id;
+            TempData.Keep("ClassId");
+            return View(students);
             return View(students);
         }
 

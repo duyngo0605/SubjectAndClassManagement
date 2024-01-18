@@ -6,31 +6,7 @@
 
 <fieldset class="mb-4">
     <legend>Grade of student</legend>
-    <div class="fieldset-wrapper">
-        <form asp-controller="StudentResults" asp-action="Index" method="post">
-            <div class="form-grade me-3 mb-2 float-start">
-                <label class="mb-2">Academic Year</label>
-                <select class="form-select" name="academicYear">
-                    <option>2021-2022</option>
-                    <option>2022-2023</option>
-                    <option>2023-2024</option>
-                    <option>2024-2025</option>
-                </select>
-            </div>
-
-            <div class="form-grade me-3 mb-2 float-start">
-                <label class="mb-2">Semester</label>
-                <select class="form-select" name="semester">
-                    <option>1</option>
-                    <option>2</option>
-                </select>
-            </div>
-
-            <div class="find-grade">
-                <input type="submit" value="Search" class="form-find">
-            </div>
-        </form>
-    </div>
+ 
 
     <div class="mt-3">
         <table class="table table-bordered">

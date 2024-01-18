@@ -92,11 +92,10 @@
                 {
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.class_id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.class_id">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.class_id">Delete</a>
                     </td>
                 }
-                
+                <a asp-action="Details" asp-route-id="@item.class_id">Details</a> |
         </tr>
 }
     </tbody>

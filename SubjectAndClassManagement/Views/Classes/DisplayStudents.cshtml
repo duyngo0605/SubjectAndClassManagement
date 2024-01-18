@@ -6,6 +6,9 @@
 
 <h2>@ViewData["ClassName"]</h2>
 
+@{
+    var classId = TempData["ClassId"];
+}
 
 
 <link rel="stylesheet" href="~/css/StyleSheet.css" />
@@ -35,8 +38,8 @@
                                     <!-- export -->
                                     <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
 
-                                    <a asp-action="Create">
-                                        <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
+                                    <a asp-controller="StuGrade" asp-action="EditResults" asp-route-id='@classId'>
+                                        <button class="btn btn-primary" type="button" style="height: 40px;">ManageResult</button>
                                     </a>
                                 </div>
                             </div>
@@ -72,17 +75,7 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.phone_number)
                                     </td>
-                                    @* <td>
-                                <a asp-action="Edit" asp-route-id="@item.subject_id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.subject_id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.subject_id">Delete</a>
-                                </td> *@
-                                    <td>
-                                        <ul class="action-list">
-                                            <li><a asp-action="Edit" asp-route-id="@item.student_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
-                                            <li><a asp-action="Delete" asp-route-id="@item.student_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
-                                        </ul>
-                                    </td>
+
                                 </tr>
                             }
 
