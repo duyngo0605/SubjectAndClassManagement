@@ -55,11 +55,14 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Classes/Create
         public IActionResult Create()
         {
+
+            // Nếu không có phiên nào đang mở, tiếp tục hiển thị trang tạo mới
             ViewData["room_id"] = new SelectList(_context.Rooms, "room_id", "room_id");
             ViewData["subject_id"] = new SelectList(_context.Subjects, "subject_id", "subject_id");
             ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id");
             return View();
         }
+
 
         // POST: Classes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -76,6 +79,16 @@ namespace SubjectAndClassManagement.Controllers
                 ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id");
                 return View(sclass);
             }
+
+            if (IsTeacherScheduleConflict(sclass))
+            {
+                ModelState.AddModelError(string.Empty, "Teacher schedule conflicts with an existing class.");
+                ViewData["room_id"] = new SelectList(_context.Rooms, "room_id", "room_id", sclass.room_id);
+                ViewData["subject_id"] = new SelectList(_context.Subjects, "subject_id", "subject_id", sclass.subject_id);
+                ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", sclass.teacher_id);
+                return View(sclass);
+            }
+
             _context.Add(sclass);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -121,6 +134,14 @@ namespace SubjectAndClassManagement.Controllers
                 return View(sclass);
             }
 
+            if (IsTeacherScheduleConflict(sclass))
+            {
+                ModelState.AddModelError(string.Empty, "Teacher schedule conflicts with an existing class.");
+                ViewData["room_id"] = new SelectList(_context.Rooms, "room_id", "room_id", sclass.room_id);
+                ViewData["subject_id"] = new SelectList(_context.Subjects, "subject_id", "subject_id", sclass.subject_id);
+                ViewData["teacher_id"] = new SelectList(_context.Teachers, "teacher_id", "teacher_id", sclass.teacher_id);
+                return View(sclass);
+            }
 
             try
             {
@@ -191,9 +212,14 @@ namespace SubjectAndClassManagement.Controllers
 
             if (openSession == null)
             {
-                TempData["NoOpenSession"] = "The registration dat has not yet arrived, please come back later";
+                TempData["NoOpenSession"] = "There's no available registration session!";
                 return View();
             }
+            else if (openSession.start_date>DateTime.Now)
+            {
+                TempData["NoOpenSession"] = $"The Registration date has not arrived yet. Please come back at {openSession.start_date} ";
+                return View();
+            }    
           
 
             // Lấy danh sách các lớp học thuộc phiên đăng ký học phần đang được mở
@@ -264,6 +290,36 @@ namespace SubjectAndClassManagement.Controllers
                             existingClass.first_period < newClass.first_period + newClass.class_period)
                         {
                             return true; // Có mâu thuẫn về thời gian và phòng học
+                        }
+                    }
+                }
+            }
+
+            return false; // Không có mâu thuẫn
+        }
+
+        private bool IsTeacherScheduleConflict(Class newClass)
+        {
+            var existingClasses = _context.Classes
+                .Where(c =>
+                    (c.teacher_id == newClass.teacher_id) &&
+                    ((c.start_date <= newClass.start_date && c.end_date >= newClass.start_date) ||
+                     (c.start_date <= newClass.end_date && c.end_date >= newClass.end_date) ||
+                     (c.start_date >= newClass.start_date && c.end_date <= newClass.end_date)))
+                .ToList();
+
+            foreach (var existingClass in existingClasses)
+            {
+                if (existingClass.class_id != newClass.class_id) // Đảm bảo không so sánh với chính nó
+                {
+                    // Kiểm tra xem có mâu thuẫn về thời gian hay không
+                    if (existingClass.days_of_week == newClass.days_of_week)
+                    {
+                        // Nếu days_of_week giống nhau, kiểm tra xem tiết học có giao nhau hay không
+                        if (newClass.first_period < existingClass.first_period + existingClass.class_period &&
+                            existingClass.first_period < newClass.first_period + newClass.class_period)
+                        {
+                            return true; // Có mâu thuẫn về thời gian và lịch giảng dạy của giáo viên
                         }
                     }
                 }

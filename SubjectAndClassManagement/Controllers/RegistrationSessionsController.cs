@@ -47,6 +47,15 @@ namespace SubjectAndClassManagement.Controllers
         // GET: RegistrationSessions/Create
         public IActionResult Create()
         {
+            // Kiểm tra xem có phiên nào đang mở không
+            bool hasOpenSession = _context.RegistrationSessions.Any(s => s.status == "open");
+
+            if (hasOpenSession)
+            {
+                // Nếu có phiên nào đang mở, xuất thông báo và chuyển hướng hoặc xử lý theo nhu cầu của bạn
+                TempData["ErrorMessage"] = "Cannot create a new session while there is an open session.";
+            }
+
             return View();
         }
 
