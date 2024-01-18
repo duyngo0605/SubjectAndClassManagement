@@ -16,8 +16,10 @@ namespace SubjectAndClassManagement.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
+
             if (User.IsInRole("student"))
             {
                 await Details(User.FindFirstValue("StudentId"));
@@ -25,12 +27,22 @@ namespace SubjectAndClassManagement.Controllers
             }
             else
             {
-                return _context.Students != null ?
-                          View(await _context.Students.ToListAsync()) :
-                          Problem("Entity set 'SchoolContext.Students'  is null.");
+                var studentsQuery = _context.Students.AsQueryable();
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    studentsQuery = studentsQuery.Where(s =>
+                        s.student_name.Contains(searchString)
+                        || s.email.Contains(searchString)
+                        || s.phone_number.Contains(searchString)
+                    );
+                }
+
+                var students = await studentsQuery.ToListAsync();
+                return View(students);
             }
         }
-            
+
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {

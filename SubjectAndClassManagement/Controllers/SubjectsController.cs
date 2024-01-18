@@ -212,9 +212,8 @@ namespace SubjectAndClassManagement.Controllers
 
                         if (!int.TryParse(creditString, out int credit))
                         {
-                            // Handle the case where credit is not a valid integer
-                            // You could log this issue, skip the row, set a default value, etc.
-                            continue; // For now, we'll skip this row
+                            // Handle when can't parse
+                            continue;
                         }
 
                         var subject = _context.Subjects.FirstOrDefault(s => s.subject_id == subjectId);

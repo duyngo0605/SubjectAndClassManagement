@@ -201,8 +201,8 @@ namespace SubjectAndClassManagement.Controllers
 
                         if (!int.TryParse(roomCapacityString, out int roomCapacity))
                         {
-                            // Handle the case where room capacity is not a valid integer
-                            continue; // Skip this row
+                            // Handle when can't parse
+                            continue;
                         }
 
                         var room = _context.Rooms.FirstOrDefault(r => r.room_id == roomId);
