@@ -75,3 +75,153 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+@* <!DOCTYPE html>
+<html>
+<head>
+	<title>Subject</title>
+	<link rel="stylesheet" href="~/css/Create.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col mx-auto col-6">
+					<div class="card">
+						<form asp-action="Edit">
+							<div class="card-body">
+								<div class="row mb-3">
+									<h3>Change infomation</h3>
+								</div>
+								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+								<input type="hidden" asp-for="class_id" />
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Subject ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="subject_id" class="form-control" />
+									</div>
+									<span asp-validation-for="subject_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Room ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="room_id" class="form-control" />
+									</div>
+									<span asp-validation-for="room_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Teacher ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="teacher_id" class="form-control" />
+									</div>
+									<span asp-validation-for="teacher_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Max member</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="max_number_of_members" class="form-control" />
+									</div>
+									<span asp-validation-for="max_number_of_members" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Day of week</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<select asp-for="days_of_week" class="form-control">
+											<option>Monday</option>
+											<option>Tuesday</option>
+											<option>Wednesday</option>
+											<option>Thursday</option>
+											<option>Friday</option>
+											<option>Saturday</option>
+											<option>Sunday</option>
+										</select>
+									</div>
+									<span asp-validation-for="days_of_week" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">First period</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="first_period" class="form-control" />
+									</div>
+									<span asp-validation-for="first_period" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Class period</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="class_period" class="form-control" />
+									</div>
+									<span asp-validation-for="class_period" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Start date</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="start_date" class="form-control" />
+									</div>
+									<span asp-validation-for="start_date" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">End date</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="end_date" class="form-control" />
+									</div>
+									<span asp-validation-for="end_date" class="text-danger"></span>
+								</div>
+
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Semester</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<select asp-for="semester" class="form-control">
+											<option>1</option>
+											<option>2</option>
+										</select>
+									</div>
+									<span asp-validation-for="semester" class="text-danger"></span>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-4"></div>
+									<div class="col-sm-4 text-secondary">
+										<a asp-action="Index">Back to List</a>
+									</div>
+									<div class="col-sm-4 text-secondary">
+										<div class="form-group">
+											<input type="submit" value="Save" class="btn btn-primary" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+</body>
+</html>
+ *@

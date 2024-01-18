@@ -22,13 +22,8 @@
                                 <h4 class="title">Classroom</h4>
                             </div>
                             <div class="col-sm-9 text-right">
-                                <div class="btn_group ml-auto">
+                                <div class="btn_group" style="width: 1300px">
                                     <input type="text" class="form-control" placeholder="Search">
-                                    <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data" style="display: inline-block;">
-                                        <input type="file" id="fileUpload" name="file" style="display: none;" onchange="this.form.submit()" />
-                                        <button type="button" class="btn btn-success" onclick="document.getElementById('fileUpload').click()">Import</button>
-                                    </form>
-                                    <a asp-action="ExportToExcel" class="btn btn-primary">Export</a>
                                     <a asp-action="Create">
                                         <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
                                     </a>

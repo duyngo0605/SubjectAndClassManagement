@@ -4,125 +4,188 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 
-<h4>Class</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="class_id" class="control-label"></label>
-                <input asp-for="class_id" class="form-control" />
-                <span asp-validation-for="class_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="subject_id" class="control-label"></label>
-                <select asp-for="subject_id" class ="form-control" asp-items="ViewBag.subject_id"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="room_id" class="control-label"></label>
-                <select asp-for="room_id" class ="form-control" asp-items="ViewBag.room_id"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <select asp-for="teacher_id" class ="form-control" asp-items="ViewBag.teacher_id"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="max_number_of_members" class="control-label"></label>
-                <input asp-for="max_number_of_members" class="form-control" />
-                <span asp-validation-for="max_number_of_members" class="text-danger"></span>
-            </div>
-            <input asp-for="number_of_members" class="form-control" value="0" hidden/>
-            <div class="form-group">
-                <label asp-for="days_of_week" class="control-label"></label>
-                <select asp-for="days_of_week" class="form-control">
-                    <option>Monday</option>
-                    <option>Tuesday</option>
-                    <option>Wednesday</option>
-                    <option>Thursday</option>
-                    <option>Friday</option>
-                    <option>Saturday</option>
-                    <option>Sunday</option>
-                </select>
-                <span asp-validation-for="days_of_week" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="first_period" class="control-label"></label>
-                <input asp-for="first_period" class="form-control" />
-                <span asp-validation-for="first_period" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="class_period" class="control-label"></label>
-                <input asp-for="class_period" class="form-control" />
-                <span asp-validation-for="class_period" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="start_date" class="control-label"></label>
-                <input asp-for="start_date" class="form-control" />
-                <span asp-validation-for="start_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="end_date" class="control-label"></label>
-                <input asp-for="end_date" class="form-control" />
-                <span asp-validation-for="end_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="semester" class="control-label"></label>
-                <select asp-for="semester" class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                </select>
-                <span asp-validation-for="semester" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Subject</title>
+	<link rel="stylesheet" href="~/css/Create.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col mx-auto col-6">
+					<div class="card">
+						<form asp-action="Create">
+							<div class="card-body">
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Class ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="class_id" class="form-control" />
+									</div>
+									<span asp-validation-for="class_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Subject ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="subject_id" class="form-control" />
+									</div>
+									<span asp-validation-for="subject_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Room ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="room_id" class="form-control" />
+									</div>
+									<span asp-validation-for="room_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Teacher ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="teacher_id" class="form-control" />
+									</div>
+									<span asp-validation-for="teacher_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Max member</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="max_number_of_members" class="form-control" />
+									</div>
+									<span asp-validation-for="max_number_of_members" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Day of week</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<select asp-for="days_of_week" class="form-control">
+											<option>Monday</option>
+											<option>Tuesday</option>
+											<option>Wednesday</option>
+											<option>Thursday</option>
+											<option>Friday</option>
+											<option>Saturday</option>
+											<option>Sunday</option>
+										</select>
+									</div>
+									<span asp-validation-for="days_of_week" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">First period</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="first_period" class="form-control" />
+									</div>
+									<span asp-validation-for="first_period" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Class period</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="class_period" class="form-control" />
+									</div>
+									<span asp-validation-for="class_period" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Start date</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="start_date" class="form-control" />
+									</div>
+									<span asp-validation-for="start_date" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">End date</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="end_date" class="form-control" />
+									</div>
+									<span asp-validation-for="end_date" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Semester</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<select asp-for="semester" class="form-control">
+											<option>1</option>
+											<option>2</option>
+										</select>
+									</div>
+									<span asp-validation-for="semester" class="text-danger"></span>
+								</div>
+								<div class="row">
+									<div class="col-sm-4"></div>
+									<div class="col-sm-4 text-secondary">
+										<a asp-action="Index">Back to List</a>
+									</div>
+									<div class="col-sm-4 text-secondary">
+										<input type="submit" value="Create" class="btn btn-primary" />
+									</div>
+								</div>
+							</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+						</form>
+					</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+				</div>
+			</div>
+		</div>
+	</div>
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
 
-<script>
-    $(document).ready(function () {
-        // Attach a submit handler to the form
-        $("form").submit(function (event) {
-            // Get the values of subject_id and class_id
-            var subjectId = $("#subject_id").val();
-            var classId = $("#class_id").val();
-            var maxMembers = $("#max_number_of_members").val();
-            var startDate = new Date($("#start_date").val());
-            var endDate = new Date($("#end_date").val());
+	<script>
+		$(document).ready(function () {
+			// Attach a submit handler to the form
+			$("form").submit(function (event) {
+				// Get the values of subject_id and class_id
+				var subjectId = $("#subject_id").val();
+				var classId = $("#class_id").val();
+				var maxMembers = $("#max_number_of_members").val();
+				var startDate = new Date($("#start_date").val());
+				var endDate = new Date($("#end_date").val());
 
-            // Check if class_id starts with subject_id
-            if (!classId.startsWith(subjectId)) {
-                // Display an alert and prevent form submission
-                alert("Class ID must start with the Subject ID.");
-                event.preventDefault();
-            }
+				// Check if class_id starts with subject_id
+				if (!classId.startsWith(subjectId)) {
+					// Display an alert and prevent form submission
+					alert("Class ID must start with the Subject ID.");
+					event.preventDefault();
+				}
 
-            if (maxMembers < 40 || maxMembers > 200) {
-                alert("Maximum number of members must be between 40 and 200.");
-                event.preventDefault();
-                return;
-            }   
+				if (maxMembers < 40 || maxMembers > 200) {
+					alert("Maximum number of members must be between 40 and 200.");
+					event.preventDefault();
+					return;
+				}
 
-            if (startDate >= endDate) {
-                alert("Start date must be before end date.");
-                event.preventDefault();
-            }
+				if (startDate >= endDate) {
+					alert("Start date must be before end date.");
+					event.preventDefault();
+				}
 
-        });
-    });
-</script>
+			});
+		});
+	</script>
+</body>
+</html>

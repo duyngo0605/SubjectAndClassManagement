@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+@* <h1>Edit</h1>
 
 <h4>Room</h4>
 <hr />
@@ -40,4 +40,90 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+} *@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Subject</title>
+	<link rel="stylesheet" href="~/css/Create.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col mx-auto col-6">
+					<div class="card">
+						<form asp-action="Edit">
+							<div class="card-body">
+								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+								<input type="hidden" asp-for="room_id" />
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Capacity</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="room_capacity" class="form-control" />
+									</div>
+									<span asp-validation-for="room_capacity" class="text-danger"></span>
+								</div>
+
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Building name</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="building_name" class="form-control" />
+									</div>
+									<span asp-validation-for="building_name" class="text-danger"></span>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-4"></div>
+									<div class="col-sm-4 text-secondary">
+										<a asp-action="Index">Back to List</a>
+									</div>
+									<div class="col-sm-4 text-secondary">
+										<input type="submit" value="Create" class="btn btn-primary" />
+									</div>
+								</div>
+							</div>
+						</form>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+	<script>
+		$(document).ready(function () {
+			// Attach a submit handler to the form
+			$("form").submit(function (event) {
+
+				var room_id = $("#room_id").val();
+				var building_name = $("#building_name").val()
+				var room_capacity = $("#room_capacity").val();
+
+				if (!room_id.startsWith(building_name)) {
+					// Display an alert and prevent form submission
+					alert("Room ID must start with the Buidling Name.");
+					event.preventDefault();
+				}
+
+				if (room_capacity <= 40) {
+					alert("Room Capacity must be larger than 40.");
+					event.preventDefault();
+				}
+
+
+			});
+		});
+	</script>
+</body>
+</html>
