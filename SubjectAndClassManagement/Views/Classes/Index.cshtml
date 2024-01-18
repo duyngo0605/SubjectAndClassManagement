@@ -43,6 +43,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Teacher)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.semester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.academic_year)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -75,6 +81,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Teacher.teacher_id)
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.semester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.academic_year)
             </td>
                 @if (User.IsInRole("admin"))
                 {
