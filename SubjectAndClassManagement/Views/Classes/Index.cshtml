@@ -4,99 +4,123 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+</head>
+<body>
 
-@if (User.IsInRole("admin"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col col-sm-3">
+                                <h4 class="title">Class management</h4>
+                            </div>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <div class="col-sm-9 text-right">
+                                    <div class="btn_group" style="width: 1300px">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <a asp-action="Create">
+                                            <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.number_of_members)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.days_of_week)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.first_period)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.class_period)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.start_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.end_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Room)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teacher)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.semester)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.academic_year)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.number_of_members)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.days_of_week)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.first_period)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.class_period)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.start_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.end_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject.subject_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Room.room_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Teacher.teacher_id)
-            </td>
-             <td>
-                @Html.DisplayFor(modelItem => item.semester)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.academic_year)
-            </td>
-                @if (User.IsInRole("admin"))
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.class_id">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.class_id">Delete</a>
-                    </td>
-                }
-                <a asp-action="Details" asp-route-id="@item.class_id">Details</a> |
-        </tr>
-}
-    </tbody>
-</table>
+
+                        </div>
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.number_of_members)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.days_of_week)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.first_period)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.class_period)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.start_date)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.end_date)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Subject)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Room)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Teacher)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.number_of_members)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.days_of_week)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.first_period)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.class_period)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.start_date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.end_date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Subject.subject_id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Room.room_id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Teacher.teacher_id)
+                                        </td>
+                                        @if (User.IsInRole("admin"))
+                                        {
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a asp-action="Edit" asp-route-id="@item.class_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
+                                                    <li><a asp-action="Delete" asp-route-id="@item.class_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        }
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
