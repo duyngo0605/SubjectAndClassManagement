@@ -152,23 +152,47 @@ END;
 CREATE TABLE StudentResults
 (
 	student_results_id NVARCHAR(20) PRIMARY KEY,
-	student_id NVARCHAR(10),
-    class_id NVARCHAR(10),
-	subject_id NVARCHAR(10),
+	registration_id NVARCHAR(20) FOREIGN KEY REFERENCES StudentRegistrations(registration_id),
     grade FLOAT,
-	FOREIGN KEY (student_id) REFERENCES Students(student_id),
-    FOREIGN KEY (class_id) REFERENCES Classes(class_id),
-	FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id),
 )
 
-CREATE TABLE ResultColumn (
+CREATE TABLE ResultColumns (
     resultcolumn_id int IDENTITY(1,1) PRIMARY KEY,
     student_results_id NVARCHAR(20) FOREIGN KEY REFERENCES StudentResults(student_results_id),
+	column_name NVARCHAR(30),
     grade FLOAT,
     weight FLOAT,
     CHECK (grade>=0 and grade <=10),
     CHECK (weight>0 and weight<=1),
 )
+
+drop trigger trg_DeleteStudentResult
+
+-- Trigger to automatically create StudentResults when a new StudentRegistration is inserted
+CREATE TRIGGER trg_CreateStudentResult
+ON StudentRegistrations
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO StudentResults (student_results_id, registration_id, grade)
+    SELECT NEWID(), inserted.registration_id, NULL
+    FROM inserted;
+END;
+
+-- Trigger to automatically delete StudentResults when a StudentRegistration is deleted
+CREATE TRIGGER trg_DeleteStudentResult
+ON StudentRegistrations
+AFTER DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM StudentResults
+    WHERE registration_id IN (SELECT deleted.registration_id FROM deleted);
+END;
+
 
 CREATE TABLE TuitionPayments (
     payment_id NVARCHAR(10) PRIMARY KEY,
@@ -242,6 +266,8 @@ BEGIN
 
 END;
 
+
+
 CREATE TRIGGER trg_CreateUserAndProfile_Teacher
 ON Teachers
 AFTER INSERT
@@ -286,3 +312,14 @@ select * from Users
 select * from Profiles
 select * from RegistrationSessions
 select * from Classes
+select * from StudentResults
+select * from StudentRegistrations
+select * from ResultColumns
+
+drop table ResultColumn
+
+alter table StudentResults alter column grade FLOAT
+
+insert into StudentResults values('R_21521999_SE100.O11', '21521999_SE100.O11', 5.5)
+insert into ResultColumns values ('R_21521999_SE100.O11', 'Attendance', 5.0, 0.5)
+insert into ResultColumns values ('R_21521999_SE100.O11', 'Final', 6.0, 0.5)

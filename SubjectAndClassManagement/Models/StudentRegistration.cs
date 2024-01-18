@@ -33,5 +33,7 @@ namespace SubjectAndClassManagement.Models
 
         public Student Student { get; set; }
         public Class Class { get; set; }
+
+        public StudentResult StudentResult { get; set; }
     }
 }

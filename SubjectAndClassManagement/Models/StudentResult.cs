@@ -16,10 +16,10 @@ namespace SubjectAndClassManagement.Models
         public string registration_id { get; set; }
 
         [DisplayName("Grade")]
-        public float grade { get; set; }
+        public double grade { get; set; }
 
         public StudentRegistration StudentRegistration { get; set; }
-        public ICollection<ResultColumn> ResultColumns { get; set; }
+        public virtual ICollection<ResultColumn> ResultColumns { get; set; }
     }
 
     public class ResultColumn
@@ -34,13 +34,13 @@ namespace SubjectAndClassManagement.Models
 
         [StringLength(30)]
         [DisplayName("Column Name")]
-        public string colum_name { get; set; }
+        public string column_name { get; set; }
 
         [DisplayName("Grade")]
-        public float grade { get; set; }
+        public double grade { get; set; }
 
         [DisplayName("Weight")]
-        public float weight { get; set; }
+        public double weight { get; set; }
 
         public StudentResult StudentResult { get; set; }
     }

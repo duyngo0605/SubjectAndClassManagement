@@ -248,6 +248,37 @@ namespace SubjectAndClassManagement.Controllers
             return View();
         }
 
+        // GET: Classes/Students/5
+        public async Task<IActionResult> DisplayStudents(string id)
+        {
+            if (id == null || _context.Classes == null)
+            {
+                return NotFound();
+            }
+
+            var sclass = await _context.Classes
+                .Include(s => s.Room)
+                .Include(s => s.Subject)
+                .Include(s => s.Teacher)
+                .FirstOrDefaultAsync(m => m.class_id == id);
+
+            if (sclass == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy danh sách sinh viên của lớp học
+            var students = await _context.StudentRegistrations
+                .Include(sr => sr.Student)
+                .Where(sr => sr.class_id == id)
+                .Select(sr => sr.Student)
+                .ToListAsync();
+
+            ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.Room.room_id}";
+            return View(students);
+        }
+
+
 
         public IActionResult RegisteredClasses()
         {
