@@ -24,22 +24,17 @@
                             </div>
                             <div class="col-sm-9 text-right">
                                 <div class="btn_group ml-auto">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                    <!-- import -->
-                                        <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
-                                            <div class="form-group">
-                                                <label for="fileUpload">Import Students:</label>
-                                                <input type="file" id="fileUpload" name="file" class="form-control-file" />
-                                            </div>
-                                            <button type="submit" class="btn btn-success">Import</button>
+                                    <div class="btn_group ml-auto">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data" style="display: inline-block;">
+                                            <input type="file" id="fileUpload" name="file" style="display: none;" onchange="this.form.submit()" />
+                                            <button type="button" class="btn btn-success" onclick="document.getElementById('fileUpload').click()">Import</button>
                                         </form>
-
-                                        <!-- export -->
-                                        <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
-
-                                    <a asp-action="Create">
-                                        <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
-                                    </a>
+                                        <a asp-action="ExportToExcel" class="btn btn-primary">Export</a>
+                                        <a asp-action="Create">
+                                            <button class="btn btn-primary" type="button" style="height: 40px;">Create New</button>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

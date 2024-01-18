@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SubjectAndClassManagement.Models;
-
-using ClosedXML.Excel;
-using System.Globalization;
-using System.IO;
-using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace SubjectAndClassManagement.Controllers
 {
@@ -81,6 +72,7 @@ namespace SubjectAndClassManagement.Controllers
         }
 
         // Action for export to Excel
+        // Action for export to Excel
         public IActionResult ExportToExcel()
         {
             using (var workbook = new XLWorkbook())
@@ -91,6 +83,7 @@ namespace SubjectAndClassManagement.Controllers
                 worksheet.Cell(currentRow, 2).Value = "Student Name";
                 worksheet.Cell(currentRow, 3).Value = "Email";
                 worksheet.Cell(currentRow, 4).Value = "Phone Number";
+                worksheet.Cell(currentRow, 5).Value = "Academic Year"; // Add a header for Academic Year
 
                 var students = _context.Students.ToList();
                 foreach (var student in students)
@@ -100,6 +93,7 @@ namespace SubjectAndClassManagement.Controllers
                     worksheet.Cell(currentRow, 2).Value = student.student_name;
                     worksheet.Cell(currentRow, 3).Value = student.email;
                     worksheet.Cell(currentRow, 4).Value = student.phone_number;
+                    worksheet.Cell(currentRow, 5).Value = student.academic_year; // Add the academic year value
                 }
 
                 using (var stream = new MemoryStream())
@@ -118,54 +112,58 @@ namespace SubjectAndClassManagement.Controllers
             if (file == null || file.Length == 0)
             {
                 ModelState.AddModelError("File", "The file was not uploaded.");
-                return View();
+                return View("Index"); // Return to the Index view if there's an error
             }
 
-            try
+            using (var stream = new MemoryStream())
             {
-                using (var stream = new MemoryStream())
+                await file.CopyToAsync(stream);
+                using (var workbook = new XLWorkbook(stream))
                 {
-                    await file.CopyToAsync(stream);
-                    using (var workbook = new XLWorkbook(stream))
+                    var worksheet = workbook.Worksheets.First();
+                    var rowCount = worksheet.RowCount();
+
+                    for (int row = 2; row <= rowCount; row++)
                     {
-                        var worksheet = workbook.Worksheets.First();
-                        var rowCount = worksheet.RowCount();
+                        var studentId = worksheet.Cell(row, 1).Value.ToString().Trim();
+                        var studentName = worksheet.Cell(row, 2).Value.ToString().Trim();
+                        var email = worksheet.Cell(row, 3).Value.ToString().Trim();
+                        var phoneNumber = worksheet.Cell(row, 4).Value.ToString().Trim();
+                        var academicYearString = worksheet.Cell(row, 5).Value.ToString().Trim();
 
-                        for (int row = 2; row <= rowCount; row++)
+                        if (!int.TryParse(academicYearString, out var academicYear))
                         {
-                            var studentId = worksheet.Cell(row, 1).Value.ToString();
-                            var student = await _context.Students.FindAsync(studentId);
-
-                            if (student == null)
-                            {
-                                // Student does not exist, add a new one
-                                student = new Student
-                                {
-                                    student_id = studentId,
-                                    student_name = worksheet.Cell(row, 2).Value.ToString(),
-                                    email = worksheet.Cell(row, 3).Value.ToString(),
-                                    phone_number = worksheet.Cell(row, 4).Value.ToString()
-                                };
-                                _context.Students.Add(student);
-                            }
-                            else
-                            {
-                                // Student already exists, update the existing one
-                                student.student_name = worksheet.Cell(row, 2).Value.ToString();
-                                student.email = worksheet.Cell(row, 3).Value.ToString();
-                                student.phone_number = worksheet.Cell(row, 4).Value.ToString();
-                                _context.Students.Update(student);
-                            }
+                            // Handle the case where academic year is not a valid integer
+                            // You could log this issue, skip the row, set a default value, etc.
+                            continue; // For now, we'll skip this row
                         }
-                        await _context.SaveChangesAsync();
+
+                        var student = await _context.Students.FindAsync(studentId);
+                        if (student == null)
+                        {
+                            // Student does not exist, add a new one
+                            student = new Student
+                            {
+                                student_id = studentId,
+                                student_name = studentName,
+                                email = email,
+                                phone_number = phoneNumber,
+                                academic_year = academicYear
+                            };
+                            _context.Students.Add(student);
+                        }
+                        else
+                        {
+                            // Student already exists, update the existing one
+                            student.student_name = studentName;
+                            student.email = email;
+                            student.phone_number = phoneNumber;
+                            student.academic_year = academicYear;
+                            _context.Students.Update(student);
+                        }
                     }
+                    await _context.SaveChangesAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                // Log exception
-                ModelState.AddModelError("File", "An error occurred while importing the file: " + ex.Message);
-                return View();
             }
 
             return RedirectToAction(nameof(Index));

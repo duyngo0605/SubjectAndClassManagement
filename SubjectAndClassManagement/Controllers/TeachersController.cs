@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -180,5 +181,88 @@ namespace SubjectAndClassManagement.Controllers
         {
           return (_context.Teachers?.Any(e => e.teacher_id == id)).GetValueOrDefault();
         }
+
+        // Action for export to Excel
+        public IActionResult ExportToExcel()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Teachers");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Teacher ID";
+                worksheet.Cell(currentRow, 2).Value = "Teacher Name";
+                worksheet.Cell(currentRow, 3).Value = "Email";
+                worksheet.Cell(currentRow, 4).Value = "Phone Number";
+
+                var teachers = _context.Teachers.ToList();
+                foreach (var teacher in teachers)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = teacher.teacher_id;
+                    worksheet.Cell(currentRow, 2).Value = teacher.teacher_name;
+                    worksheet.Cell(currentRow, 3).Value = teacher.email;
+                    worksheet.Cell(currentRow, 4).Value = teacher.phone_number;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Teachers.xlsx");
+                }
+            }
+        }
+
+        // Action for import from Excel
+        [HttpPost]
+        public IActionResult ImportFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                ModelState.AddModelError("File", "The file was not uploaded.");
+                return View("Index"); // Return to the Index view if there's an error
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheets.First();
+                    var rowCount = worksheet.RowCount();
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var teacherId = worksheet.Cell(row, 1).Value.ToString().Trim();
+                        var existingTeacher = _context.Teachers.Find(teacherId);
+
+                        if (existingTeacher == null)
+                        {
+                            // Teacher does not exist, add a new one
+                            var newTeacher = new Teacher
+                            {
+                                teacher_id = teacherId,
+                                teacher_name = worksheet.Cell(row, 2).Value.ToString().Trim(),
+                                email = worksheet.Cell(row, 3).Value.ToString().Trim(),
+                                phone_number = worksheet.Cell(row, 4).Value.ToString().Trim()
+                            };
+                            _context.Teachers.Add(newTeacher);
+                        }
+                        else
+                        {
+                            // Teacher already exists, update the existing one
+                            existingTeacher.teacher_name = worksheet.Cell(row, 2).Value.ToString().Trim();
+                            existingTeacher.email = worksheet.Cell(row, 3).Value.ToString().Trim();
+                            existingTeacher.phone_number = worksheet.Cell(row, 4).Value.ToString().Trim();
+                            // No need to set the state to Modified; EF tracks changes automatically
+                        }
+                    }
+                    _context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

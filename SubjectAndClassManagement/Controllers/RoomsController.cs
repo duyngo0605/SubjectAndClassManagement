@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -144,6 +145,91 @@ namespace SubjectAndClassManagement.Controllers
         private bool RoomExists(string id)
         {
           return (_context.Rooms?.Any(e => e.room_id == id)).GetValueOrDefault();
+        }
+
+        public IActionResult ExportToExcel()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Rooms");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Room ID";
+                worksheet.Cell(currentRow, 2).Value = "Room Capacity";
+                worksheet.Cell(currentRow, 3).Value = "Building Name";
+
+                var rooms = _context.Rooms.ToList();
+                foreach (var room in rooms)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = room.room_id;
+                    worksheet.Cell(currentRow, 2).Value = room.room_capacity;
+                    worksheet.Cell(currentRow, 3).Value = room.building_name;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Rooms.xlsx");
+                }
+            }
+        }
+
+        // Action for importing rooms from Excel
+        [HttpPost]
+        public IActionResult ImportFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                ModelState.AddModelError("File", "The file was not uploaded.");
+                return View("Index"); // Return to the Index view if there's an error
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheets.First();
+                    var rowCount = worksheet.RowCount();
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var roomId = worksheet.Cell(row, 1).Value.ToString().Trim();
+                        var roomCapacityString = worksheet.Cell(row, 2).Value.ToString().Trim();
+                        var buildingName = worksheet.Cell(row, 3).Value.ToString().Trim();
+
+                        if (!int.TryParse(roomCapacityString, out int roomCapacity))
+                        {
+                            // Handle the case where room capacity is not a valid integer
+                            continue; // Skip this row
+                        }
+
+                        var room = _context.Rooms.FirstOrDefault(r => r.room_id == roomId);
+                        if (room == null)
+                        {
+                            // Room does not exist, add a new one
+                            room = new Room
+                            {
+                                room_id = roomId,
+                                room_capacity = roomCapacity,
+                                building_name = buildingName
+                            };
+                            _context.Rooms.Add(room);
+                        }
+                        else
+                        {
+                            // Room already exists, update the existing one
+                            room.room_capacity = roomCapacity;
+                            room.building_name = buildingName;
+                            _context.Rooms.Update(room);
+                        }
+                    }
+                    _context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
