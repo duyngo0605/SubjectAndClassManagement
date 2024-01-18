@@ -22,7 +22,7 @@ CREATE TABLE Students (
     student_id NVARCHAR(10) PRIMARY KEY,
     student_name NVARCHAR(255) NOT NULL,
     email NVARCHAR(255),
-	academic_year NVARCHAR(20),
+	academic_year int,
     phone_number NVARCHAR(20)
 );
 
