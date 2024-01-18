@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h2 class="text-center">Details Teacher</h2>
 
 <div>
     
@@ -60,6 +60,7 @@
         <div>
             <a asp-action="Edit" asp-route-id="@Model?.teacher_id">Edit</a> |
             <a asp-action="Index">Back to List</a>
+            <a asp-controller="Accounts" asp-action="ChangePassword">Update password</a>
         </div>
 
     }
@@ -91,21 +92,29 @@
                     <input type="text" class="form-control" asp-for="User.Profile.date_of_birth" id="inputPhone4" readonly>
                 </div>
 
-
                 <div class="col-md-6">
+                    <label asp-for="User.Profile.citizen_id_card" class="form-label">Citizen Id</label>
+                    <input type="text" class="form-control" asp-for="User.Profile.citizen_id_card" id="inputAddress2" readonly>
+                </div>
+
+                <div class="col-md-12">
                     <label asp-for="User.Profile.address" class="form-label">Address</label>
                     <input type="text" class="form-control" asp-for="User.Profile.address" id="inputAddress2" readonly>
                 </div>
 
+
+
+                <div class="col-2">
+                    <button asp-action="Edit" asp-route-id="@Model?.teacher_id" class="p-2">Update information</button>
+                </div>
+
+                <div class="col-2">
+                    <button asp-controller="Accounts" asp-action="ChangePassword" class="p-2">Update password</button>
+                </div>
+
+               
+                    
                 
-
-                <div class="col-2">
-                    <button class="p-2 rounded-2" asp-action="Edit" asp-route-id="@Model?.teacher_id">Update information</button>
-                </div>
-
-                <div class="col-2">
-                    <button class="p-2 rounded-2" asp-area="" asp-controller="Accounts" asp-action="ChangePassword">Update password</button>
-                </div>
 
 
             </form>
