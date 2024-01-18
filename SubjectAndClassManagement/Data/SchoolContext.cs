@@ -21,6 +21,8 @@ public class SchoolContext : DbContext
 
     public DbSet<Notification> Notifications { get; set; }
 
+    public DbSet<RegistrationSession> RegistrationSessions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Class>()
@@ -173,6 +175,9 @@ public class SchoolContext : DbContext
 
         modelBuilder.Entity<Notification>()
             .Property(u => u.notify_id);
+
+        modelBuilder.Entity<RegistrationSession>()
+            .Property(u => u.session_id);
     }
 
 }

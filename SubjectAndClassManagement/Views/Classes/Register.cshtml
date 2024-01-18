@@ -19,6 +19,7 @@
     </div>
 }
 
+
 <nav class="navbar navbar-expand-sm  navbar-dark">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
@@ -34,11 +35,18 @@
     </div>
 </nav>
 
+@if (TempData["NoOpenSession"] != null)
+{
+    <h1>@TempData["NoOpenSession"]</h1>
+}
+else
+{
+
 <main class="container-fluid">
     <div id="registeredClassesTable">
     <form id="registrationForm" method="post" asp-controller="StudentRegistrations" asp-action="Register">
         <div  class="container bg-light" style="height: auto; overflow: scroll;">
-            <h3>List of registered classes</h3>
+            <h3>Choose classes to register!</h3>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -55,7 +63,14 @@
                     {
                         <tr>
                             <td>
+                            @if (item.number_of_members >= item.max_number_of_members)
+                            {
+                                <input class="form-check-input" type="checkbox" disabled name="selectedClasses" value="@item.class_id">
+                            }
+                            else 
+                            {
                                 <input class="form-check-input" type="checkbox" name="selectedClasses" value="@item.class_id">
+                            }
                             </td>
                             <td>
                                 @item.class_id
@@ -96,7 +111,7 @@
     <div id="unregisteredClassesTable" style="display: none">
         <form id="unRegistrationForm" method="post" asp-controller="StudentRegistrations" asp-action="Unregister">
         <div  class="container bg-light" style="height: auto; overflow: scroll;">
-            <h3>List of registered classes</h3>
+            <h3>List of succesful registered classes</h3>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -152,6 +167,7 @@
     </div>
 </main>
 
+}
 
 <script>
     // Function to show registered classes

@@ -1,0 +1,65 @@
+﻿@model SubjectAndClassManagement.Models.RegistrationSession
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>RegistrationSession</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="session_id" />
+            <div class="form-group">
+                <label asp-for="start_date" class="control-label"></label>
+                <input asp-for="start_date" class="form-control" />
+                <span asp-validation-for="start_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="end_date" class="control-label"></label>
+                <input asp-for="end_date" class="form-control" />
+                <span asp-validation-for="end_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="semester" class="control-label"></label>
+                <select asp-for="semester" class="form-control">
+                    <option>1</option>
+                    <option>2</option>
+                </select>
+                <span asp-validation-for="semester" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="academic_year" class="control-label"></label>
+                <select asp-for="academic_year" class="form-control" value="2023 - 2024">
+                    <option>2022 - 2023</option>
+                    <option>2023 - 2024</option>
+                    <option>2024 - 2025</option>
+                </select>
+                <span asp-validation-for="academic_year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <select asp-for="status" class="form-control">
+                    <option>open</option>
+                    <option>closed</option>
+                </select>
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

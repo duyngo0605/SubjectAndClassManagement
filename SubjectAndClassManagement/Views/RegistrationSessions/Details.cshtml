@@ -1,0 +1,48 @@
+﻿@model SubjectAndClassManagement.Models.RegistrationSession
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>RegistrationSession</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.start_date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.start_date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.end_date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.end_date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.semester)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.semester)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.academic_year)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.academic_year)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.status)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.status)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.session_id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

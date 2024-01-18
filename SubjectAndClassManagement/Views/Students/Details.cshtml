@@ -28,6 +28,13 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.phone_number)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.academic_year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.academic_year)
+        </dd>
+
         @* Display Profile Information *@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
@@ -56,6 +63,12 @@
 
 
     </dl>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.student_id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+        <a asp-controller="Accounts" asp-action="ChangePassword">Change Password</a>
+    </div>
 
     @* Display Classes Registrations Information *@
     <h4>Classes Registered</h4>
@@ -90,11 +103,13 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Class.class_id)
                     </td>
-                    <td>
-                        <a asp-controller="StudentRegistrations" asp-action="Edit" asp-route-id="@item.registration_id">Edit</a> |
+                    @if (User.IsInRole("admin"))
+                    {
+                        <td>
                         <a asp-controller="StudentRegistrations" asp-action="Details" asp-route-id="@item.registration_id">Details</a> |
                         <a asp-controller="StudentRegistrations" asp-action="Delete" asp-route-id="@item.registration_id">Delete</a>
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
@@ -102,7 +117,3 @@
 
 </div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.student_id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
