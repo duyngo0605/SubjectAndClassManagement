@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SubjectAndClassManagement.Models;
 
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
+using System.IO; 
+
 namespace SubjectAndClassManagement.Controllers
 {
     public class SubjectsController : Controller
@@ -150,6 +154,95 @@ namespace SubjectAndClassManagement.Controllers
         private bool SubjectExists(string id)
         {
           return (_context.Subjects?.Any(e => e.subject_id == id)).GetValueOrDefault();
+        }
+        public IActionResult ExportToExcel()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Subjects");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Subject ID";
+                worksheet.Cell(currentRow, 2).Value = "Subject Name";
+                worksheet.Cell(currentRow, 3).Value = "Subject Description";
+                worksheet.Cell(currentRow, 4).Value = "Credit";
+
+                var subjects = _context.Subjects.ToList();
+                foreach (var subject in subjects)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = subject.subject_id;
+                    worksheet.Cell(currentRow, 2).Value = subject.subject_name;
+                    worksheet.Cell(currentRow, 3).Value = subject.subject_description;
+                    worksheet.Cell(currentRow, 4).Value = subject.credit;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Subjects.xlsx");
+                }
+            }
+        }
+
+        // Action for import from Excel
+        [HttpPost]
+        public IActionResult ImportFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                ModelState.AddModelError("File", "The file was not uploaded.");
+                return View("Index"); // Return to the Index view if there's an error
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheets.First();
+                    var rowCount = worksheet.RowCount();
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var subjectId = worksheet.Cell(row, 1).Value.ToString().Trim();
+                        var subjectName = worksheet.Cell(row, 2).Value.ToString().Trim();
+                        var subjectDescription = worksheet.Cell(row, 3).Value.ToString().Trim();
+                        var creditString = worksheet.Cell(row, 4).Value.ToString().Trim();
+
+                        if (!int.TryParse(creditString, out int credit))
+                        {
+                            // Handle when can't parse
+                            continue;
+                        }
+
+                        var subject = _context.Subjects.FirstOrDefault(s => s.subject_id == subjectId);
+                        if (subject == null)
+                        {
+                            // Subject does not exist, add a new one
+                            subject = new Subject
+                            {
+                                subject_id = subjectId,
+                                subject_name = subjectName,
+                                subject_description = subjectDescription,
+                                credit = credit
+                            };
+                            _context.Subjects.Add(subject);
+                        }
+                        else
+                        {
+                            // Subject already exists, update the existing one
+                            subject.subject_name = subjectName;
+                            subject.subject_description = subjectDescription;
+                            subject.credit = credit;
+                            _context.Subjects.Update(subject);
+                        }
+                    }
+                    _context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

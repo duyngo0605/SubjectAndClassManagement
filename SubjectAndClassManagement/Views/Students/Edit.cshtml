@@ -53,7 +53,10 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="User.Profile.gender" class="control-label"></label>
-                        <input asp-for="User.Profile.gender" class="form-control" />
+                        <select asp-for="User.Profile.gender" class="form-control">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
                         <span asp-validation-for="User.Profile.gender" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -96,7 +99,10 @@
 
         <div class="col-md-6">
             <label asp-for="User.Profile.gender" class="control-label"></label>
-            <input asp-for="User.Profile.gender" class="form-control" />
+            <select asp-for="User.Profile.gender" class="form-control">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
             <span asp-validation-for="User.Profile.gender" class="text-danger"></span>
         </div>
         <div class="col-md-6">

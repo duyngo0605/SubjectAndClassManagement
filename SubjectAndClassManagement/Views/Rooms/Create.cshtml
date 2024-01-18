@@ -1,78 +1,100 @@
 ﻿@model SubjectAndClassManagement.Models.Room
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
 }
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<h1>Create</h1>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Subject</title>
+	<link rel="stylesheet" href="~/css/Create.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col mx-auto col-6">
+					<div class="card">
+						<form asp-action="Create">
+							<div class="card-body">
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Room ID</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="room_id" class="form-control" />
+									</div>
+									<span asp-validation-for="room_id" class="text-danger"></span>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Capacity</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="room_capacity" class="form-control" />
+									</div>
+									<span asp-validation-for="room_capacity" class="text-danger"></span>
+								</div>
 
-<h4>Room</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="room_id" class="control-label"></label>
-                <input asp-for="room_id" class="form-control" />
-                <span asp-validation-for="room_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="room_capacity" class="control-label"></label>
-                <input asp-for="room_capacity" class="form-control" />
-                <span asp-validation-for="room_capacity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="building_name" class="control-label"></label>
-                <select asp-for="building_name" class="form-control">
-                    <option value="A">Tòa A</option>
-                    <option value="B">Tòa B</option>
-                    <option value="C">Tòa C</option>
-                    <option value="D">Tòa D</option>
-                    <option value="E">Tòa E</option>
-                </select>
-                <span asp-validation-for="building_name" class="text-danger"></span>
-            </div>
-           
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Building name</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input asp-for="building_name" class="form-control" />
+									</div>
+									<span asp-validation-for="building_name" class="text-danger"></span>
+								</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+								<div class="row">
+									<div class="col-sm-4"></div>
+									<div class="col-sm-4 text-secondary">
+										<a asp-action="Index">Back to List</a>
+									</div>
+									<div class="col-sm-4 text-secondary">
+										<input type="submit" value="Create" class="btn btn-primary" />
+									</div>
+								</div>
+							</div>
+						</form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+					</div>
 
-<script>
-    $(document).ready(function () {
-        // Attach a submit handler to the form
-        $("form").submit(function (event) {
+				</div>
+			</div>
+		</div>
+	</div>
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+	<script>
+		$(document).ready(function () {
+			// Attach a submit handler to the form
+			$("form").submit(function (event) {
 
-            var room_id = $("#room_id").val();
-            var building_name = $("#building_name").val()
-            var room_capacity = $("#room_capacity").val();
+				var room_id = $("#room_id").val();
+				var building_name = $("#building_name").val()
+				var room_capacity = $("#room_capacity").val();
 
-            if (!room_id.startsWith(building_name)) {
-                // Display an alert and prevent form submission
-                alert("Room ID must start with the Buidling Name.");
-                event.preventDefault();
-            }
+				if (!room_id.startsWith(building_name)) {
+					// Display an alert and prevent form submission
+					alert("Room ID must start with the Buidling Name.");
+					event.preventDefault();
+				}
 
-            if (room_capacity <= 40)
-            {
-                alert("Room Capacity must be larger than 40.");
-                event.preventDefault();
-            }
+				if (room_capacity <= 40) {
+					alert("Room Capacity must be larger than 40.");
+					event.preventDefault();
+				}
 
 
-        });
-    });
-</script>
+			});
+		});
+	</script>
+</body>
+</html>

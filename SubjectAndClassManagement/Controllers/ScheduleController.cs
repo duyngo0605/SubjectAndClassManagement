@@ -21,21 +21,40 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Schedule
         public async Task<IActionResult> Index()
         {
-            var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isStudent = User.IsInRole("student");
+            var isTeacher = User.IsInRole("teacher");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Fetch classes where the student registered
-            var registeredClasses = await _context.StudentRegistrations
-                .Where(sr => sr.student_id == studentId && sr.status == "Registered")
-                .Include(sr => sr.Class) // Include Class
-                    .ThenInclude(c => c.Subject)
-                .Include(sr => sr.Class) 
-                    .ThenInclude(c => c.Room)
-                .Include(sr => sr.Class) 
-                    .ThenInclude(c => c.Teacher) 
-                .Select(sr => sr.Class) 
-                .ToListAsync();
+            if (isStudent)
+            {
+                var registeredClasses = await _context.StudentRegistrations
+                    .Where(sr => sr.student_id == userId && sr.status == "Registered")
+                    .Include(sr => sr.Class) // Include Class
+                        .ThenInclude(c => c.Subject)
+                    .Include(sr => sr.Class)
+                        .ThenInclude(c => c.Room)
+                    .Include(sr => sr.Class)
+                        .ThenInclude(c => c.Teacher)
+                    .Select(sr => sr.Class)
+                    .ToListAsync();
 
-            return View(registeredClasses);
+                return View("Index", registeredClasses);
+            }
+            else if (isTeacher)
+            {
+                var teachingClasses = await _context.Classes
+                    .Where(c => c.teacher_id == userId)
+                    .Include(c => c.Subject)
+                    .Include(c => c.Room)
+                    .Include(c => c.Teacher)
+                    .ToListAsync();
+
+                return View("Index", teachingClasses);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 }

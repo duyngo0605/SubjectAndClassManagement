@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="my-2">
+@* <div class="my-2">
     <form asp-controller="Notifications" asp-action="Search" method="get">
         <div class="input-group">
             <input type="text" class="form-control" name="searchString" placeholder="Nhập từ khóa...">
@@ -16,7 +16,7 @@
 </div>
 
 
-@if(User.IsInRole("admin"))
+@if (User.IsInRole("admin"))
 {
     <h1>Index</h1>
 
@@ -51,13 +51,13 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.notify_description)
                     </td>
-                    
+
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.notify_id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.notify_id">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.notify_id">Delete</a>
                     </td>
-                    
+
 
 
                 </tr>
@@ -68,7 +68,7 @@
 
 else
 {
-    <h1>Notifications</h1>
+    <h2 class="text-center">Notifications</h2>
 
 
     @foreach (var item in Model)
@@ -80,9 +80,91 @@ else
             <p>Trân trọng</p>
         </div>
     }
-}
+} *@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col col-sm-3">
+                                <h4 class="title">Notification</h4>
+                            </div>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <div class="col-sm-9 text-right">
+                                    <div class="btn_group" style="width: 1300px">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <a asp-action="Create">
+                                            <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
 
 
+                        </div>
+                    </div>
+                    <div class="panel-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.notify_header)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.notify_day)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.notify_description)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.notify_header)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.notify_day)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.notify_description)
+                                        </td>
+                                        @if (User.IsInRole("admin"))
+                                        {
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a asp-action="Edit" asp-route-id="@item.notify_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
+                                                    <li><a asp-action="Delete" asp-route-id="@item.notify_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        }
 
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
 
     
