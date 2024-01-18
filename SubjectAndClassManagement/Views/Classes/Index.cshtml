@@ -101,15 +101,18 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Teacher.teacher_id)
                                         </td>
+                                        <td>
+                                            <ul class="action-list">
+                                                <li><a asp-action="Details" asp-route-id="@item.class_id" data-tip="details"><i class="fa fa-info-circle"></i></a></li>
                                         @if (User.IsInRole("admin"))
                                         {
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a asp-action="Edit" asp-route-id="@item.class_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
-                                                    <li><a asp-action="Delete" asp-route-id="@item.class_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
+                                            
+                                            <li><a asp-action="Edit" asp-route-id="@item.class_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
+                                            <li><a asp-action="Delete" asp-route-id="@item.class_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
+                                              
                                         }
+                                            </ul>
+                                        </td>
 
                                     </tr>
                                 }
