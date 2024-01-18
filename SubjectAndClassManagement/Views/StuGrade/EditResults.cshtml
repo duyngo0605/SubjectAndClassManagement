@@ -1,0 +1,186 @@
+﻿@model IEnumerable<SubjectAndClassManagement.Models.StudentRegistration>
+
+@{
+    ViewData["Title"] = "Edit Student Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Student Results - @ViewData["ClassName"]</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+
+<div class="container">
+    <form asp-controller="StuGrade" asp-action="EditResults" method="post">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th style="width: 80px;">Attendance</th>
+                    <th style="width: 80px;">Attendance Weight</th>
+                    <th style="width: 80px;">Mid-term</th>
+                    <th style="width: 80px;">Mid-term Weight</th>
+                    <th style="width: 80px;">Final</th>
+                    <th style="width: 80px;">Final Weight</th>
+                    <th style="width: 80px;">Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model)
+                {
+                    <tr>
+                        <td>@student.Student.student_id</td>
+                        <td>@student.Student.student_name</td>
+                        <td>
+                            <input type="number" class="form-control" name="grades[@student.registration_id][Attendance].grade" placeholder="0" min="0" max="10"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.grade" />
+                        </td>
+                        <td>
+                        <input type="number" class="form-control" name="grades[@student.registration_id][Attendance].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" name="grades[@student.registration_id][Mid-term].grade" placeholder="0" min="0" max="10"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.grade" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" name="grades[@student.registration_id][Mid-term].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.weight" />
+                        </td>
+                        <td>
+                        <input type="number" class="form-control" name="grades[@student.registration_id][Final].grade" placeholder="0" min="0" max="10"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.grade" />
+                        </td>
+                        <td>
+                        <input type="number" class="form-control" name="grades[@student.registration_id][Final].weight" placeholder="0" step="0.1" min="0.5" max="1.0"
+                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight" />
+                        </td>
+                        <td id="average">
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="mt-3">
+            <input class="submit" type="submit" value="Save Changes" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Gán sự kiện change cho tất cả các input có class 'form-control'
+            $('.form-control').change(function () {
+                updateAverage();
+            });
+
+            // Sự kiện submit của form
+            $('.submit').click(function (e) {
+                if (!validateInputs()) {
+                    e.preventDefault(); // Ngăn chặn việc submit nếu dữ liệu không hợp lệ
+                    alert("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.");
+                }
+            });
+
+            // Hàm kiểm tra giới hạn điểm số từ 0 đến 10 và trọng số từ 0 đến 1
+            function validateInputs() {
+                var isValid = true;
+
+                $('tbody tr').each(function () {
+                    var attendanceGrade = parseFloat($(this).find('[name$="[Attendance].grade"]').val()) || 0;
+                    var attendanceWeight = parseFloat($(this).find('[name$="[Attendance].weight"]').val()) || 0;
+
+                    var midtermGrade = parseFloat($(this).find('[name$="[Mid-term].grade"]').val()) || 0;
+                    var midtermWeight = parseFloat($(this).find('[name$="[Mid-term].weight"]').val()) || 0;
+
+                    var finalGrade = parseFloat($(this).find('[name$="[Final].grade"]').val()) || 0;
+                    var finalWeight = parseFloat($(this).find('[name$="[Final].weight"]').val()) || 0;
+
+                    if (!isValidInput(attendanceGrade) || !isValidInput(midtermGrade) || !isValidInput(finalGrade)
+                        || !isValidWeight(attendanceWeight) || !isValidWeight(midtermWeight) || !isValidWeight(finalWeight)) {
+                        isValid = false;
+                        return false; // Ngừng lặp nếu có ít nhất một giá trị không hợp lệ
+                    }
+
+                    var totalWeight = attendanceWeight + midtermWeight + finalWeight;
+
+                    if (totalWeight > 1) {
+                        isValid = false;
+                        alert('Tổng trọng số không được vượt quá 1.');
+                        return false; // Ngừng lặp nếu tổng trọng số vượt quá 1
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Hàm kiểm tra giới hạn điểm số từ 0 đến 10
+            function isValidInput(value) {
+                return value >= 0 && value <= 10;
+            }
+
+            // Hàm kiểm tra giới hạn trọng số từ 0 đến 1
+            function isValidWeight(value) {
+                return value >= 0 && value <= 1;
+            }
+
+
+           
+
+
+            // Hàm cập nhật giá trị trung bình
+            function updateAverage() {
+                $('tbody tr').each(function () {
+                    var attendanceGrade = parseFloat($(this).find('[name$="[Attendance].grade"]').val()) || 0;
+                    var attendanceWeight = parseFloat($(this).find('[name$="[Attendance].weight"]').val()) || 0;
+
+                    var midtermGrade = parseFloat($(this).find('[name$="[Mid-term].grade"]').val()) || 0;
+                    var midtermWeight = parseFloat($(this).find('[name$="[Mid-term].weight"]').val()) || 0;
+
+                    var finalGrade = parseFloat($(this).find('[name$="[Final].grade"]').val()) || 0;
+                    var finalWeight = parseFloat($(this).find('[name$="[Final].weight"]').val()) || 0;
+
+                    // Kiểm tra giới hạn điểm số từ 0 đến 10 và trọng số từ 0 đến 1
+                    if (!isValidInput(attendanceGrade) || !isValidInput(midtermGrade) || !isValidInput(finalGrade)
+                        || !isValidWeight(attendanceWeight) || !isValidWeight(midtermWeight) || !isValidWeight(finalWeight)) {
+                        return; // Không cập nhật nếu dữ liệu không hợp lệ
+                    }
+
+                    var totalWeight = attendanceWeight + midtermWeight + finalWeight;
+
+                    // Kiểm tra tổng trọng số có quá 1 hay không
+                    if (totalWeight > 1) {
+                        alert('Tổng trọng số không được vượt quá 1.');
+                        return; // Không cập nhật nếu tổng trọng số vượt quá 1
+                    }
+
+                    var average = (attendanceGrade * attendanceWeight + midtermGrade * midtermWeight + finalGrade * finalWeight);
+
+                    // Cập nhật giá trị trung bình vào ô "Average"
+                    $(this).find('#average').text(average.toFixed(2));
+
+                });
+            }
+
+            // Lắng nghe sự kiện thay đổi trên các trường trọng số và chỉ cho phép thay đổi khi nhấn nút mũi tên
+            $('input[name$="Weight"]').on('input', function (e) {
+                if (e.originalEvent && e.originalEvent.inputType !== 'insertText') {
+                    // Chỉ cho phép thay đổi giá trị trọng số khi nhấn nút mũi tên (không cho phép nhập trực tiếp)
+                    return false;
+                }
+            });
+
+
+        });
+    </script>
+}

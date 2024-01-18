@@ -90,7 +90,7 @@
 
                     </li>
                     <li class="nav-item mt-2">
-                        <a class="text-decoration-none text-light" asp-area="" asp-controller="StuGrade" asp-action="Index">
+                        <a class="text-decoration-none text-light" asp-area="" asp-controller="StuGrade" asp-action="Details" asp-route-id="@User.FindFirstValue("username")">
                             <i class="fa-solid fa-book-open me-3"></i>Grade
                         </a>
 
@@ -107,7 +107,7 @@
                 {
                     <li class="nav-item mt-3">
                         <a class="text-decoration-none text-light" asp-area="" asp-controller="Classes" asp-action="Index">
-                            <i class="fa-solid fa-chalkboard me-3"></i>Subjects Registration
+                            <i class="fa-solid fa-chalkboard me-3"></i>Manage Student's Grade
                         </a>
                     </li>
 
@@ -119,12 +119,6 @@
                     <li class="nav-item mt-2">
                         <a class="text-decoration-none text-light" asp-area="" asp-controller="Notifications" asp-action="Index">
                             <i class="fa-solid fa-bell me-3"></i>Notify
-                        </a>
-
-                    </li>
-                    <li class="nav-item mt-2">
-                        <a class="text-decoration-none text-light" asp-area="" asp-controller="TeachGrade" asp-action="Index">
-                            <i class="fa-solid fa-book-open me-3"></i>Grade
                         </a>
 
                     </li>

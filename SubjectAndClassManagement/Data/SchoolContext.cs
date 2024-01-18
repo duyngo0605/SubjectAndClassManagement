@@ -22,6 +22,8 @@ public class SchoolContext : DbContext
     public DbSet<Notification> Notifications { get; set; }
 
     public DbSet<RegistrationSession> RegistrationSessions { get; set; }
+    public DbSet<StudentResult> StudentResults { get; set; }
+    public DbSet<ResultColumn> ResultColumns { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -178,6 +180,25 @@ public class SchoolContext : DbContext
 
         modelBuilder.Entity<RegistrationSession>()
             .Property(u => u.session_id);
+
+        modelBuilder.Entity<StudentResult>()
+            .Property(u => u.student_results_id);
+
+        modelBuilder.Entity<ResultColumn>()
+            .Property(u => u.resultcolumn_id);
+
+        modelBuilder.Entity<StudentResult>()
+            .HasOne(u => u.StudentRegistration)
+            .WithOne(s => s.StudentResult)
+            .HasForeignKey<StudentResult>(u => u.registration_id)
+            .IsRequired(false);
+        
+        modelBuilder.Entity<ResultColumn>()
+            .HasOne(u => u.StudentResult)
+            .WithMany(s => s.ResultColumns)
+            .HasForeignKey(u => u.student_results_id)
+            .IsRequired(false);
+
     }
 
 }

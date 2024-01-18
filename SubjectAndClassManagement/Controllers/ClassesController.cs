@@ -23,12 +23,27 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
-            var allClasses = _context.Classes
+
+            if (User.IsInRole("teacher"))
+            {
+                var allClasses = _context.Classes
                     .Include(s => s.Room)
                     .Include(s => s.Subject)
-                    .Include(s => s.Teacher);
+                    .Include(s => s.Teacher)
+                    .Where(s=> s.teacher_id== User.FindFirstValue("username"));
+                return View(await allClasses.ToListAsync());
+            }
+            else
+            {
+                var allClasses = _context.Classes
+                   .Include(s => s.Room)
+                   .Include(s => s.Subject)
+                   .Include(s => s.Teacher);
 
-            return View(await allClasses.ToListAsync());
+                return View(await allClasses.ToListAsync());
+            }
+          
+
         }
 
         // GET: Classes/Details/5
@@ -247,6 +262,40 @@ namespace SubjectAndClassManagement.Controllers
 
             return View();
         }
+
+        // GET: Classes/Students/5
+        public async Task<IActionResult> DisplayStudents(string id)
+        {
+            if (id == null || _context.Classes == null)
+            {
+                return NotFound();
+            }
+
+            var sclass = await _context.Classes
+                .Include(s => s.Room)
+                .Include(s => s.Subject)
+                .Include(s => s.Teacher)
+                .FirstOrDefaultAsync(m => m.class_id == id);
+
+            if (sclass == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy danh sách sinh viên của lớp học
+            var students = await _context.StudentRegistrations
+                .Include(sr => sr.Student)
+                .Where(sr => sr.class_id == id)
+                .Select(sr => sr.Student)
+                .ToListAsync();
+
+            ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.class_id}";
+            TempData["ClassId"] = sclass.class_id;
+            TempData.Keep("ClassId");
+            return View(students);
+            return View(students);
+        }
+
 
 
         public IActionResult RegisteredClasses()
