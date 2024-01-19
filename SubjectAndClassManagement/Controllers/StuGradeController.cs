@@ -36,16 +36,6 @@ namespace SubjectAndClassManagement.Controllers
             return View(students);
         }
 
-        [HttpPost]
-        public IActionResult UpdateGrade(string studentId, string classId, float grade)
-        {
-            // Xử lý cập nhật điểm của sinh viên
-            // ...
-
-            // Chuyển hướng về trang nhập điểm
-            return RedirectToAction("Index", new { classId });
-        }
-
         public async Task<IActionResult> Details(string id)
         {
             var student = await _context.Students
@@ -57,6 +47,8 @@ namespace SubjectAndClassManagement.Controllers
                     .ThenInclude(r => r.Class)
                         .ThenInclude(c => c.Subject)
                 .FirstOrDefaultAsync(m => m.student_id == id);
+
+
 
             return View(student);
         }
@@ -88,6 +80,11 @@ namespace SubjectAndClassManagement.Controllers
                 .ToListAsync();
 
             ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.class_id}";
+
+            // Lấy giá trị weight của các result column cần thiết và truyền vào TempData
+            TempData["AttendanceWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight ?? 0;
+            TempData["MidtermWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.weight ?? 0;
+            TempData["FinalWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight ?? 0;
 
             return View("EditResults", students);
         }

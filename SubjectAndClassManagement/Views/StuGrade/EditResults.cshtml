@@ -22,13 +22,34 @@
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th style="width: 80px;">Attendance</th>
-                    <th style="width: 80px;">Attendance Weight</th>
-                    <th style="width: 80px;">Mid-term</th>
-                    <th style="width: 80px;">Mid-term Weight</th>
-                    <th style="width: 80px;">Final</th>
-                    <th style="width: 80px;">Final Weight</th>
-                    <th style="width: 80px;">Average</th>
+                    <th style="width: 120px;">Attendance</th>
+                    <th hidden style="width: 80px;">Attendance Weight</th>
+                    <th style="width: 120px;">Mid-term</th>
+                    <th hidden style="width: 80px;">Mid-term Weight</th>
+                    <th style="width: 120px;">Final</th>
+                    <th hidden style="width: 80px;">Final Weight</th>
+                    <th style="width: 120px;">Average</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <input type="number" class="form-control attendance-weight" id="Attendance-Weight"
+                               oninput="updateInputs('attendance', this.value)" placeholder="0" min="0" max="1" step="0.1"
+                               value="@TempData["AttendanceWeight"]">
+                    </th>
+                    <th>
+                        <input type="number" class="form-control midterm-weight" id="Mid-term-Weight"
+                               oninput="updateInputs('midterm', this.value)" placeholder="0" min="0" max="1" step="0.1"
+                               value="@TempData["MidtermWeight"]">
+                    </th>
+                    <th>
+                        <input type="number" class="form-control final-weight" id="Final-Weight"
+                               oninput="updateInputs('final', this.value)" placeholder="0" min="0.5" max="1" step="0.1"
+                               value="@TempData["FinalWeight"]">
+                    </th>
+                    <th></th>
+                </tr>
                 </tr>
             </thead>
             <tbody>
@@ -41,27 +62,28 @@
                             <input type="number" class="form-control" name="grades[@student.registration_id][Attendance].grade" placeholder="0" min="0" max="10"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.grade" />
                         </td>
-                        <td>
-                        <input type="number" class="form-control" name="grades[@student.registration_id][Attendance].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
+                        <td hidden>
+                            <input type="number" class="form-control attendance-weight" name="grades[@student.registration_id][Attendance].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight" />
                         </td>
                         <td>
                             <input type="number" class="form-control" name="grades[@student.registration_id][Mid-term].grade" placeholder="0" min="0" max="10"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.grade" />
                         </td>
-                        <td>
-                            <input type="number" class="form-control" name="grades[@student.registration_id][Mid-term].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
+                        <td hidden>
+                            <input type="number" class="form-control midterm-weight" name="grades[@student.registration_id][Mid-term].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.weight" />
                         </td>
                         <td>
                         <input type="number" class="form-control" name="grades[@student.registration_id][Final].grade" placeholder="0" min="0" max="10"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.grade" />
                         </td>
-                        <td>
-                        <input type="number" class="form-control" name="grades[@student.registration_id][Final].weight" placeholder="0" step="0.1" min="0.5" max="1.0"
+                        <td hidden>
+                            <input type="number" class="form-control final-weight" name="grades[@student.registration_id][Final].weight" placeholder="0" step="0.1" min="0.5" max="1.0"
                                     value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight" />
                         </td>
                         <td id="average">
+                            
                         </td>
                     </tr>
                 }
@@ -78,11 +100,29 @@
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Gán sự kiện change cho tất cả các input có class 'form-control'
+        document.addEventListener("DOMContentLoaded", function ()
             $('.form-control').change(function () {
+            // Lấy giá trị từ sinh viên đầu tiên
+            var initialAttendance = @Model.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.grade ?? 0;
+            var initialMidterm = @Model.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.grade ?? 0;
+            var initialFinal = @Model.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.grade ?? 0;
+
+            // Gán giá trị mặc định cho các ô input chính
+            $('#Attendance-Weight').val(initialAttendance);
+            $('#Mid-term-Weight').val(initialMidterm);
+            $('#Final-Weight').val(initialFinal);
                 updateAverage();
             });
+
+            function updateInputs(type, value) {
+                // Lấy danh sách tất cả các input có class tương ứng với loại (attendance, midterm, final)
+                var inputs = document.querySelectorAll('.' + type + '-weight');
+
+                // Lặp qua từng input để cập nhật giá trị
+                inputs.forEach(function (input) {
+                    input.value = value;
+                });
+            }
 
             // Sự kiện submit của form
             $('.submit').click(function (e) {
@@ -180,7 +220,18 @@
                 }
             });
 
+            
 
         });
+
+        function updateInputs(type, value) {
+            // Lấy danh sách tất cả các input có class tương ứng với loại (attendance, midterm, final)
+            var inputs = document.querySelectorAll('.' + type + '-weight');
+
+            // Lặp qua từng input để cập nhật giá trị
+            inputs.forEach(function (input) {
+                input.value = value;
+            });
+        }
     </script>
 }
