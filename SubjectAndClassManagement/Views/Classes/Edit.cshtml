@@ -4,78 +4,6 @@
     ViewData["Title"] = "Edit";
 }
 
-@* <h1>Edit</h1>
-
-<h4>Class</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="class_id" />
-            <div class="form-group">
-                <label asp-for="subject_id" class="control-label"></label>
-                <select asp-for="subject_id" class="form-control" asp-items="ViewBag.subject_id"></select>
-                <span asp-validation-for="subject_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="room_id" class="control-label"></label>
-                <select asp-for="room_id" class="form-control" asp-items="ViewBag.room_id"></select>
-                <span asp-validation-for="room_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="teacher_id" class="control-label"></label>
-                <select asp-for="teacher_id" class="form-control" asp-items="ViewBag.teacher_id"></select>
-                <span asp-validation-for="teacher_id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="number_of_members" class="control-label"></label>
-                <input asp-for="number_of_members" class="form-control" />
-                <span asp-validation-for="number_of_members" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="days_of_week" class="control-label"></label>
-                <input asp-for="days_of_week" class="form-control" />
-                <span asp-validation-for="days_of_week" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="class_period" class="control-label"></label>
-                <input asp-for="class_period" class="form-control" />
-                <span asp-validation-for="class_period" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="start_date" class="control-label"></label>
-                <input asp-for="start_date" class="form-control" />
-                <span asp-validation-for="start_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="end_date" class="control-label"></label>
-                <input asp-for="end_date" class="form-control" />
-                <span asp-validation-for="end_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="semester" class="control-label"></label>
-                <select asp-for="semester" class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                </select>
-                <span asp-validation-for="semester" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
- *@
 
 <!DOCTYPE html>
 <html>
@@ -101,7 +29,7 @@
 										<h6 class="mb-0">Subject ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="subject_id" class="form-control" />
+										<select asp-for="subject_id" class="form-control" asp-items="ViewBag.subject_id"></select>
 									</div>
 									<span asp-validation-for="subject_id" class="text-danger"></span>
 								</div>
@@ -110,7 +38,7 @@
 										<h6 class="mb-0">Room ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="room_id" class="form-control" />
+										<select asp-for="room_id" class="form-control" asp-items="ViewBag.room_id"></select>
 									</div>
 									<span asp-validation-for="room_id" class="text-danger"></span>
 								</div>
@@ -119,7 +47,7 @@
 										<h6 class="mb-0">Teacher ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="teacher_id" class="form-control" />
+										<select asp-for="teacher_id" class="form-control" asp-items="ViewBag.teacher_id"></select>
 									</div>
 									<span asp-validation-for="teacher_id" class="text-danger"></span>
 								</div>

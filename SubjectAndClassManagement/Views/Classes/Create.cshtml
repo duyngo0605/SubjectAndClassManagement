@@ -1,7 +1,7 @@
 ﻿@model SubjectAndClassManagement.Models.Class
 
 @{
-    ViewData["Title"] = "Create";
+	ViewData["Title"] = "Create";
 }
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -35,7 +35,7 @@
 										<h6 class="mb-0">Subject ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="subject_id" class="form-control" />
+										<select asp-for="subject_id" class="form-control" asp-items="ViewBag.subject_id"></select>
 									</div>
 									<span asp-validation-for="subject_id" class="text-danger"></span>
 								</div>
@@ -44,7 +44,7 @@
 										<h6 class="mb-0">Room ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="room_id" class="form-control" />
+										<select asp-for="room_id" class="form-control" asp-items="ViewBag.room_id"></select>
 									</div>
 									<span asp-validation-for="room_id" class="text-danger"></span>
 								</div>
@@ -53,7 +53,7 @@
 										<h6 class="mb-0">Teacher ID</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="teacher_id" class="form-control" />
+										<select asp-for="teacher_id" class="form-control" asp-items="ViewBag.teacher_id"></select>
 									</div>
 									<span asp-validation-for="teacher_id" class="text-danger"></span>
 								</div>
