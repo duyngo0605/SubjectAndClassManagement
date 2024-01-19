@@ -7,132 +7,186 @@
 
 
 <div>
-    <h2 class="text-center">Detail Student</h2>
+        @if (User.IsInRole("admin"))
+        {
+        <div class="container">
+            <div class="main-body">
+                <div class="row">
+                    <div class="col mx-auto col-6">
+                        <div class="card">
+                            <form asp-action="Edit">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <h3>Detail student</h3>
+                                    </div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="student_id" />
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Student name</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="student_name" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="student_name" class="text-danger"></span>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Email</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="email" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="email" class="text-danger"></span>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Phone number</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="phone_number" class="form-control"></input>
+                                        </div>
+                                        <span asp-validation-for="phone_number" class="text-danger"></span>
+                                    </div>
 
-    @if (User.IsInRole("admin"))
-    {
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.student_name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.student_name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.email)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.email)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.phone_number)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.phone_number)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.academic_year)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.academic_year)
-            </dd>
+                                    <input type="hidden" asp-for="User.password" />
+                                    <input type="hidden" asp-for="User.username" />
+                                    <input type="hidden" asp-for="User.user_type" />
+                                    <input type="hidden" asp-for="User.student_id" />
+                                    <input type="hidden" asp-for="User.teacher_id" />
+                                    <input type="hidden" asp-for="User.Profile.profile_id" />
+                                    <input type="hidden" asp-for="User.Profile.username" />
 
-            @* Display Profile Information *@
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.User.Profile.date_of_birth)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.Profile.date_of_birth)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.User.Profile.gender)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.Profile.gender)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.User.Profile.address)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.Profile.address)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.User.Profile.citizen_id_card)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.Profile.citizen_id_card)
-            </dd>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Date of birth</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="User.Profile.date_of_birth" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="User.Profile.date_of_birth" class="text-danger"></span>
+                                    </div>
 
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Gender</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="User.Profile.gender" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="User.Profile.gender" class="text-danger"></span>
+                                    </div>
 
-        </dl>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Address</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="User.Profile.address" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="User.Profile.address" class="text-danger"></span>
+                                    </div>
 
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model?.student_id">Edit</a> |
-            <a asp-action="Index">Back to List</a>
-            <a asp-controller="Accounts" asp-action="ChangePassword">Change Password</a>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Citizen ID</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input asp-for="User.Profile.citizen_id_card" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="User.Profile.citizen_id_card" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <a asp-action="Edit" asp-route-id="@Model?.student_id">
+                                                <button>Edit</button>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-4 text-secondary">
+                                            <a asp-action="Index">
+                                                <button>Back to lits</button>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-4 text-secondary">
+                                            <a asp-controller="Accounts" asp-action="ChangePassword">
+                                                <button>Change password</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
+
+            
+        }
+
+        @if (User.IsInRole("student"))
+        {
+            <form class="row g-3">
+
+                <div class="col-4">
+                    <label asp-for="student_id" class="control-label">Student Id</label>
+                    <input asp-for="student_id" class="form-control" readonly />
+                </div>
+                <div class="col-8">
+                    <label asp-for="student_name" class="control-label">Full name</label>
+                    <input asp-for="student_name" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="academic_year" class="control-label">Academic year</label>
+                    <input asp-for="academic_year" class="form-control" readonly />
+                </div>
+
+                <div class="col-md-2">
+                    <label asp-for="User.Profile.gender" class="control-label">Gender</label>
+                    <input asp-for="User.Profile.gender" class="form-control" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="email" class="control-label">Email</label>
+                    <input asp-for="email" class="form-control" readonly />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="User.Profile.date_of_birth" class="control-label">Date of birth</label>
+                    <input asp-for="User.Profile.date_of_birth" class="form-control" readonly />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="phone_number" class="control-label">Phone number</label>
+                    <input asp-for="phone_number" class="form-control" readonly />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="User.Profile.citizen_id_card" class="control-label">Citizen Id</label>
+                    <input asp-for="User.Profile.citizen_id_card" class="form-control" readonly />
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="User.Profile.address" class="control-label">Address</label>
+                    <input asp-for="User.Profile.address" class="form-control" readonly />
+                </div>
+
+                <div class="col-2">
+                    <button asp-action="Edit" asp-route-id="@Model?.student_id" class="p-2">Update information</button>
+                </div>
+
+                <div class="col-2">
+                    <button asp-controller="Accounts" asp-action="ChangePassword" class="p-2">Update password</button>
+                </div>
+
+
+
+
+            </form>
+
+        }
+
     
-    @if (User.IsInRole("student"))
-    {
-        <form class="row g-3">
-
-            <div class="col-4">
-                <label asp-for="student_id" class="control-label">Student Id</label>
-                <input asp-for="student_id" class="form-control" readonly />
-            </div>
-            <div class="col-8">
-                <label asp-for="student_name" class="control-label">Full name</label>
-                <input asp-for="student_name" class="form-control" readonly />
-            </div>
-            <div class="col-md-4">
-                <label asp-for="academic_year" class="control-label">Academic year</label>
-                <input asp-for="academic_year" class="form-control" readonly />
-            </div>
-
-            <div class="col-md-2">
-                <label asp-for="User.Profile.gender" class="control-label">Gender</label>
-                <input asp-for="User.Profile.gender" class="form-control" readonly />
-            </div>
-            <div class="col-md-6">
-                <label asp-for="email" class="control-label">Email</label>
-                <input asp-for="email" class="form-control" readonly />
-            </div>
-
-            <div class="col-md-4">
-                <label asp-for="User.Profile.date_of_birth" class="control-label">Date of birth</label>
-                <input asp-for="User.Profile.date_of_birth" class="form-control" readonly />
-            </div>
-
-            <div class="col-md-4">
-                <label asp-for="phone_number" class="control-label">Phone number</label>
-                <input asp-for="phone_number" class="form-control" readonly />
-            </div>
-
-            <div class="col-md-4">
-                <label asp-for="User.Profile.citizen_id_card" class="control-label">Citizen Id</label>
-                <input asp-for="User.Profile.citizen_id_card" class="form-control" readonly />
-            </div>
-
-            <div class="col-12">
-                <label asp-for="User.Profile.address" class="control-label">Address</label>
-                <input asp-for="User.Profile.address" class="form-control" readonly />
-            </div>
-
-            <div class="col-2">
-                <button asp-action="Edit" asp-route-id="@Model?.student_id" class="p-2">Update information</button>
-            </div>
-
-            <div class="col-2">
-                <button asp-controller="Accounts" asp-action="ChangePassword" class="p-2">Update password</button>
-            </div>
-
-
-
-
-        </form>
-        
-    }
     
 
 

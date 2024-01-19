@@ -4,11 +4,7 @@
     ViewData["Title"] = "Students";
 }
 
-<h2>@ViewData["ClassName"]</h2>
 
-@{
-    var classId = TempData["ClassId"];
-}
 
 
 <link rel="stylesheet" href="~/css/StyleSheet.css" />
@@ -19,28 +15,24 @@
             <div class="panel">
                 <div class="panel-heading">
                     <div class="row">
+                        <h2 class="title" style="width:1000px; font-size: 35px; margin-bottom:20px">@ViewData["ClassName"]</h2>
+                        @{
+                            var classId = TempData["ClassId"];
+                        }
+                    </div>
+                    <div class="row">
                         <div class="col col-sm-3">
-                            <h4 class="title">Subject Management</h4>
+                            <h4 class="title">Student registrated</h4>
                         </div>
                         <div class="col-sm-9 text-right">
                             <div class="btn_group ml-auto">
-                                <div class="btn_group ml-auto">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                    <!-- import -->
-                                    <form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <label for="fileUpload">Import Students:</label>
-                                            <input type="file" id="fileUpload" name="file" class="form-control-file" />
-                                        </div>
-                                        <button type="submit" class="btn btn-success">Import</button>
-                                    </form>
-
-                                    <!-- export -->
-                                    <a class="btn btn-primary" asp-action="ExportToExcel">Export to Excel</a>
-
-                                    <a asp-controller="StuGrade" asp-action="EditResults" asp-route-id='@classId'>
-                                        <button class="btn btn-primary" type="button" style="height: 40px;">ManageResult</button>
-                                    </a>
+                                <div class="col-sm-9 text-right">
+                                    <div class="btn_group" style="width: 1300px">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <a asp-action="Create">
+                                            <button class="btn" type="button" style="height: 40px; width: 150px">Create New</button>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
