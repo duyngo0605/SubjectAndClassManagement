@@ -88,8 +88,10 @@
 
                     if (classForPeriodAndDay != null)
                     {
-                                    <td rowspan="@classForPeriodAndDay.class_period" class="rowspan_data">
+                                    <td rowspan="@classForPeriodAndDay.class_period" class="rowspan_data" style="background: white">
                                         <strong>@classForPeriodAndDay.Subject.subject_name</strong>
+                                        <br />
+                            @classForPeriodAndDay.class_id
                                         <br>
                                         Size: @classForPeriodAndDay.number_of_members
                                         <br>
