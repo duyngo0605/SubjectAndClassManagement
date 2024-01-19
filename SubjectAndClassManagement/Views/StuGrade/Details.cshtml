@@ -31,7 +31,7 @@
                         <td>@result.Class.Subject.subject_name</td>
                         <td>@result.Class.Subject.credit</td>
                         <td>@result.StudentResult.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.grade</td>
-                        <td>@result.StudentResult.ResultColumns.FirstOrDefault(rc => rc.column_name == "Middle")?.grade</td>
+                        <td>@result.StudentResult.ResultColumns.FirstOrDefault(rc => rc.column_name == "Miterm")?.grade</td>
                         <td>@result.StudentResult.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.grade</td>
                         <td>@result.StudentResult.grade</td>
                     </tr>

@@ -326,7 +326,7 @@ alter table StudentResults alter column grade FLOAT
 insert into StudentResults values('R_21521999_SE100.O11', '21521999_SE100.O11', 5.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Attendance', 5.0, 0.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Final', 6.0, 0.5)
-update ResultColumns set grade = 10.0 where column_name = 'Final'
+update ResultColumns set grade = 9.0 where column_name = 'Attendance'
 
 CREATE TRIGGER trg_AutoSetStudentResultGrade
 ON ResultColumns
