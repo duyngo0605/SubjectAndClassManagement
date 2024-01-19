@@ -211,6 +211,15 @@
                                     </div>
                                     <span asp-validation-for="phone_number" class="text-danger"></span>
                                 </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Academic Year</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input asp-for="academic_year" class="form-control"></input>
+                                    </div>
+                                    <span asp-validation-for="academic_year" class="text-danger"></span>
+                                </div>
 
                                 <input type="hidden" asp-for="User.password" />
                                 <input type="hidden" asp-for="User.username" />
