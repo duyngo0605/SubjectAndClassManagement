@@ -50,6 +50,19 @@
 </style>
 
 <h2 class="text-center">Timetable school year</h2>
+<div class="form-item me-3 mb-2">
+    <label class="mb-2">Semester</label>
+    <select class="form-select" asp-items="ViewBag.Semesters">
+        <option value="">Select Semester</option>
+    </select>
+</div>
+
+<div class="form-item me-3 mb-2">
+    <label class="mb-2">Academic Year</label>
+    <select class="form-select" asp-items="ViewBag.AcademicYears">
+        <option value="">Select Academic Year</option>
+    </select>
+</div>
 <table class="table table-bordered mt-3 ms-1">
     <thead>
         <tr>
