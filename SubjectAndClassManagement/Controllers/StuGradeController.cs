@@ -83,8 +83,9 @@ namespace SubjectAndClassManagement.Controllers
 
             // Lấy giá trị weight của các result column cần thiết và truyền vào TempData
             TempData["AttendanceWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight ?? 0;
-            TempData["MidtermWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Mid-term")?.weight ?? 0;
+            TempData["MidtermWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Midterm")?.weight ?? 0;
             TempData["FinalWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight ?? 0;
+            @TempData["Grade"] = students.FirstOrDefault()?.StudentResult?.grade;
 
             return View("EditResults", students);
         }
