@@ -4,83 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-@* <div class="my-2">
-    <form asp-controller="Notifications" asp-action="Search" method="get">
-        <div class="input-group">
-            <input type="text" class="form-control" name="searchString" placeholder="Nhập từ khóa...">
-            <div class="input-group-append">
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            </div>
-        </div>
-    </form>
-</div>
 
-
-@if (User.IsInRole("admin"))
-{
-    <h1>Index</h1>
-
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.notify_header)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.notify_day)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.notify_description)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.notify_header)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.notify_day)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.notify_description)
-                    </td>
-
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.notify_id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.notify_id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.notify_id">Delete</a>
-                    </td>
-
-
-
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-else
-{
-    <h2 class="text-center">Notifications</h2>
-
-
-    @foreach (var item in Model)
-    {
-        <div class="my-4 p-4 rounded border border-primary">
-            <h2>@Html.DisplayFor(modelItem => item.notify_header)</h2>
-            <p>@Html.DisplayFor(modelItem => item.notify_day)</p>
-            <p>@Html.DisplayFor(modelItem => item.notify_description)</p>
-            <p>Trân trọng</p>
-        </div>
-    }
-} *@
 
 <!DOCTYPE html>
 <html>
@@ -143,15 +67,21 @@ else
                                         <td>
                                             @Html.DisplayFor(modelItem => item.notify_description)
                                         </td>
-                                        @if (User.IsInRole("admin"))
-                                        {
-                                            <td>
-                                                <ul class="action-list">
+                                        <td>
+                                            <ul class="action-list">
+                                                @if (User.IsInRole("admin"))
+                                                {
                                                     <li><a asp-action="Edit" asp-route-id="@item.notify_id" data-tip="edit"><i class="fa fa-edit"></i></a></li>
                                                     <li><a asp-action="Delete" asp-route-id="@item.notify_id" data-tip="delete"><i class="fa fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        }
+                                                }
+                                                else
+                                                {
+                                                    <li><a asp-action="Details" asp-route-id="@item.notify_id" data-tip="details"><i class="fa fa-info-circle"></i></a></li>
+                                                }
+
+                                            </ul>
+                                        </td>
+
 
                                     </tr>
                                 }
@@ -166,5 +96,3 @@ else
 
 </body>
 </html>
-
-    

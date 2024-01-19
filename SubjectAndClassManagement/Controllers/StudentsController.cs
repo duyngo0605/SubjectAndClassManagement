@@ -55,6 +55,11 @@ namespace SubjectAndClassManagement.Controllers
             .Include(s => s.User)               // Include User
             .ThenInclude(u => u.Profile)    // ThenInclude Profile inside User
             .Include(s => s.Registrations)
+            .ThenInclude(s=>s.Class)
+                .ThenInclude(s=>s.Subject)
+            .Include(s => s.Registrations)
+            .ThenInclude(s => s.Class)
+                .ThenInclude(s => s.Teacher)
             .FirstOrDefaultAsync(m => m.student_id == id);
 
             if (student == null)
