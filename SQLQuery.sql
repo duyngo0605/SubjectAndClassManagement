@@ -314,7 +314,7 @@ select * from RegistrationSessions
 select * from Classes
 select * from StudentResults
 select * from StudentRegistrations
-select * from ResultColumns
+select * from ResultColumns  
 
 delete from StudentResults where registration_id = '21521976_SE100.O11'
 

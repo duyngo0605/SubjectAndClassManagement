@@ -31,9 +31,6 @@ else
 builder.Services.AddDbContext<SchoolContext>(options =>
     options.UseSqlServer(connection));
 
-
-
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -60,3 +57,4 @@ app.MapControllerRoute(
     pattern: "{controller=Accounts}/{action=Login}/{id?}");
 
 app.Run();
+
