@@ -314,7 +314,7 @@ select * from RegistrationSessions
 select * from Classes
 select * from StudentResults
 select * from StudentRegistrations
-select * from ResultColumns
+select * from ResultColumns  
 
 delete from StudentResults where registration_id = '21521976_SE100.O11'
 
@@ -326,7 +326,7 @@ alter table StudentResults alter column grade FLOAT
 insert into StudentResults values('R_21521999_SE100.O11', '21521999_SE100.O11', 5.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Attendance', 5.0, 0.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Final', 6.0, 0.5)
-update ResultColumns set grade = 10.0 where column_name = 'Final'
+update ResultColumns set grade = 9.0 where column_name = 'Attendance'
 
 CREATE TRIGGER trg_AutoSetStudentResultGrade
 ON ResultColumns
