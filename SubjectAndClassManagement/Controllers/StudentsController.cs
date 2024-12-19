@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using SubjectAndClassManagement.Models;
 using System.Security.Claims;
 
@@ -121,45 +122,51 @@ namespace SubjectAndClassManagement.Controllers
                 }
             }
         }
-
-        // Action for importing from Excel
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportFromExcel(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
-                ModelState.AddModelError("File", "The file was not uploaded.");
-                return View("Index"); // Return to the Index view if there's an error
+                TempData["ErrorMessage"] = "Please select a valid Excel file.";
+                return RedirectToAction(nameof(Index));
             }
+
+            var students = new List<Student>();
 
             using (var stream = new MemoryStream())
             {
                 await file.CopyToAsync(stream);
-                using (var workbook = new XLWorkbook(stream))
+                using (var package = new ExcelPackage(stream))
                 {
-                    var worksheet = workbook.Worksheets.First();
-                    var rowCount = worksheet.RowCount();
-
-                    for (int row = 2; row <= rowCount; row++)
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (worksheet == null)
                     {
-                        var studentId = worksheet.Cell(row, 1).Value.ToString().Trim();
-                        var studentName = worksheet.Cell(row, 2).Value.ToString().Trim();
-                        var email = worksheet.Cell(row, 3).Value.ToString().Trim();
-                        var phoneNumber = worksheet.Cell(row, 4).Value.ToString().Trim();
-                        var academicYearString = worksheet.Cell(row, 5).Value.ToString().Trim();
+                        TempData["ErrorMessage"] = "The Excel file is empty or invalid.";
+                        return RedirectToAction(nameof(Index));
+                    }
 
-                        if (!int.TryParse(academicYearString, out var academicYear))
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++) // Bỏ qua dòng đầu tiên (header)
+                    {
+                        var studentId = worksheet.Cells[row, 1].Value?.ToString()?.Trim();
+                        var studentName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        var email = worksheet.Cells[row, 3].Value?.ToString()?.Trim();
+                        var phoneNumber = worksheet.Cells[row, 4].Value?.ToString()?.Trim();
+                        var academicYearString = worksheet.Cells[row, 5].Value?.ToString()?.Trim();
+
+                        // Chuyển đổi academic_year từ string sang int
+                        if (!int.TryParse(academicYearString, out int academicYear))
                         {
-                            // Handle the case where academic year is not a valid integer
-                            // You could log this issue, skip the row, set a default value, etc.
-                            continue; // For now, we'll skip this row
+                            continue; // Bỏ qua dòng nếu giá trị academic_year không hợp lệ
                         }
 
-                        var student = await _context.Students.FindAsync(studentId);
-                        if (student == null)
+                        if (!string.IsNullOrEmpty(studentId) &&
+                            !string.IsNullOrEmpty(studentName) &&
+                            academicYear > 0)
                         {
-                            // Student does not exist, add a new one
-                            student = new Student
+                            var student = new Student
                             {
                                 student_id = studentId,
                                 student_name = studentName,
@@ -167,24 +174,35 @@ namespace SubjectAndClassManagement.Controllers
                                 phone_number = phoneNumber,
                                 academic_year = academicYear
                             };
-                            _context.Students.Add(student);
-                        }
-                        else
-                        {
-                            // Student already exists, update the existing one
-                            student.student_name = studentName;
-                            student.email = email;
-                            student.phone_number = phoneNumber;
-                            student.academic_year = academicYear;
-                            _context.Students.Update(student);
+
+                            students.Add(student);
                         }
                     }
-                    await _context.SaveChangesAsync();
                 }
+            }
+
+            if (students.Any())
+            {
+                // Tránh thêm trùng lặp
+                foreach (var student in students)
+                {
+                    if (!_context.Students.Any(s => s.student_id == student.student_id))
+                    {
+                        _context.Students.Add(student);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Students imported successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No valid data found in the Excel file.";
             }
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
