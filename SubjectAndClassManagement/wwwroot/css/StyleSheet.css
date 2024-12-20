@@ -3,7 +3,7 @@
 }
 
 .panel {
-    background: linear-gradient(to right, #BBBBBB, #AAAAAA);
+    background: linear-gradient(to right, #aac7f0, #aac7f0);
     margin-top: 50px;
     width: 1200px;
     overflow: auto;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -215,10 +216,18 @@ namespace SubjectAndClassManagement.Controllers
                 foreach (var classId in selectedClasses)
                 {
                     var registration_id = studentId + "_" + classId;
-                    var studentRegistration = await _context.StudentRegistrations.FindAsync(registration_id);
+                    var studentRegistration = await _context.StudentRegistrations
+                        .Include(sr => sr.StudentResult)
+                        .ThenInclude(sr => sr.ResultColumns)
+                        .FirstOrDefaultAsync(sr => sr.registration_id == registration_id);
                     if (studentRegistration != null)
                     {
                         _context.StudentRegistrations.Remove(studentRegistration);
+                        _context.StudentResults.Remove(studentRegistration.StudentResult);
+                        foreach (var item in studentRegistration.StudentResult.ResultColumns)
+                        {
+                            _context.ResultColumns.Remove(item);
+                        }
                         success += $"Successfully unregistered for class {classId}.\n";
                     }
                 }
