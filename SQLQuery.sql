@@ -1,4 +1,10 @@
-﻿CREATE TABLE Rooms (
+﻿DROP DATABASE SubjectAndClassManagement
+use  master
+CREATE DATABASE SubjectAndClassManagement
+
+use SubjectAndClassManagement
+
+CREATE TABLE Rooms (
     room_id NVARCHAR(10) PRIMARY KEY,
     room_capacity INT CHECK (room_capacity >= 40),
     building_name NVARCHAR(255)
@@ -27,7 +33,7 @@ CREATE TABLE Students (
 );
 
 CREATE TABLE Classes (
-    class_id NVARCHAR(10) PRIMARY KEY,
+    class_id NVARCHAR(30) PRIMARY KEY,
     subject_id NVARCHAR(10) FOREIGN KEY REFERENCES Subjects(subject_id),
     room_id NVARCHAR(10) FOREIGN KEY REFERENCES Rooms(room_id),
     teacher_id NVARCHAR(10) FOREIGN KEY REFERENCES Teachers(teacher_id),
@@ -43,6 +49,7 @@ CREATE TABLE Classes (
 	CHECK (start_date < end_date),
 	CHECK (max_number_of_members > 40 AND max_number_of_members < 200 AND number_of_members <= max_number_of_members),
 );
+
 CREATE TRIGGER trg_AutoGenerateAcademicYear
 ON Classes
 AFTER INSERT, UPDATE
@@ -83,16 +90,15 @@ CHECK (dbo.CheckOpenSessionCount() <= 1);
 
 
 CREATE TABLE StudentRegistrations (
-    registration_id NVARCHAR(20) PRIMARY KEY,
+    registration_id NVARCHAR(30) PRIMARY KEY,
     student_id NVARCHAR(10),
-    class_id NVARCHAR(10),
+    class_id NVARCHAR(30),
     registration_date DATE,
     status NVARCHAR(20),
     reason NTEXT,
     FOREIGN KEY (student_id) REFERENCES Students(student_id),
     FOREIGN KEY (class_id) REFERENCES Classes(class_id)
 );
-
 
 CREATE TRIGGER trg_UpdateNumberOfMembers
 ON StudentRegistrations
@@ -151,35 +157,22 @@ END;
 
 CREATE TABLE StudentResults
 (
-	student_results_id NVARCHAR(20) PRIMARY KEY,
-	registration_id NVARCHAR(20) FOREIGN KEY REFERENCES StudentRegistrations(registration_id),
+	student_results_id NVARCHAR(30) PRIMARY KEY,
+	registration_id NVARCHAR(30) FOREIGN KEY REFERENCES StudentRegistrations(registration_id),
     grade FLOAT,
 )
 
 CREATE TABLE ResultColumns (
     resultcolumn_id int IDENTITY(1,1) PRIMARY KEY,
-    student_results_id NVARCHAR(20) FOREIGN KEY REFERENCES StudentResults(student_results_id),
+    student_results_id NVARCHAR(30) FOREIGN KEY REFERENCES StudentResults(student_results_id),
 	column_name NVARCHAR(30),
     grade FLOAT,
-    weight FLOAT,
     CHECK (grade>=0 and grade <=10),
-    CHECK (weight>0 and weight<=1),
 )
 
 drop trigger trg_DeleteStudentResult
 
--- Trigger to automatically create StudentResults when a new StudentRegistration is inserted
-CREATE TRIGGER trg_CreateStudentResult
-ON StudentRegistrations
-AFTER INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
 
-    INSERT INTO StudentResults (student_results_id, registration_id, grade)
-    SELECT NEWID(), inserted.registration_id, NULL
-    FROM inserted;
-END;
 
 -- Trigger to automatically delete StudentResults when a StudentRegistration is deleted
 CREATE TRIGGER trg_DeleteStudentResult
@@ -246,24 +239,20 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @userId NVARCHAR(10);
-    DECLARE @password NVARCHAR(255);
-
-    -- Get the inserted student_id
-    SELECT @userId = student_id
+    -- Insert into Users table for all inserted students
+    INSERT INTO Users (username, password, user_type, student_id, status)
+    SELECT 
+        student_id, 
+        CAST(FLOOR(RAND(CHECKSUM(NEWID())) * 1000000) AS NVARCHAR(255)), -- Random password per row
+        'student',
+        student_id, 
+        'active'
     FROM inserted;
 
-    -- Generate a random password
-    SET @password = CAST(FLOOR(RAND() * 1000000) AS NVARCHAR(255)); -- You may need to use a more secure method for password generation
-
-    -- Insert into Users table
-    INSERT INTO Users (username, password, user_type, student_id, status)
-    VALUES (@userId, @password, 'student', @userId, 'active');
-
-    -- Insert into Profiles table
+    -- Insert into Profiles table for all inserted students
     INSERT INTO Profiles (username)
-    VALUES (@userId);
-
+    SELECT student_id
+    FROM inserted;
 END;
 
 
@@ -275,26 +264,24 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @userId NVARCHAR(10);
-    DECLARE @password NVARCHAR(255);
-
-    -- Get the inserted teacher_id
-    SELECT @userId = teacher_id
+    -- Insert into Users table for all inserted teachers
+    INSERT INTO Users (username, password, user_type, teacher_id, status)
+    SELECT 
+        teacher_id, 
+        CAST(FLOOR(RAND(CHECKSUM(NEWID())) * 1000000) AS NVARCHAR(255)), -- Random password per row
+        'teacher',
+        teacher_id, 
+        'active'
     FROM inserted;
 
-    -- Generate a random password
-    SET @password = CAST(FLOOR(RAND() * 1000000) AS NVARCHAR(255)); -- You may need to use a more secure method for password generation
-
-    -- Insert into Users table
-    INSERT INTO Users (username, password, user_type, teacher_id, status)
-    VALUES (@userId, @password, 'teacher', @userId, 'active');
-
-    -- Insert into Profiles table
+    -- Insert into Profiles table for all inserted teachers
     INSERT INTO Profiles (username)
-    VALUES (@userId);
-
+    SELECT teacher_id
+    FROM inserted;
 END;
 
+
+drop trigger trg_CreateUserAndProfile_Teacher
 
 
 create table Notifications
@@ -305,19 +292,33 @@ create table Notifications
     notify_description ntext,
 )
 
+CREATE TABLE ClassWeights (
+    classweight_id NVARCHAR(30) PRIMARY KEY,
+	class_id NVARCHAR(30) FOREIGN KEY REFERENCES CLASSES(class_id),
+    attendance_weight FLOAT CHECK (attendance_weight > 0 AND attendance_weight <= 1),
+    midterm_weight FLOAT CHECK (midterm_weight > 0 AND midterm_weight <= 1),
+    final_weight FLOAT CHECK (final_weight > 0 AND final_weight <= 1),
+    FOREIGN KEY (class_id) REFERENCES Classes(class_id)
+);
+
+ALTER TABLE ResultColumns
+DROP COLUMN weight; -- Nếu có cột weight trong StudentResults
+
 insert into Users values('admin', 'admin', 'admin', null, null, 'active')
 
 select * from Students
+select * from Teachers
 select * from Users
 select * from Profiles
 select * from RegistrationSessions
 select * from Classes
-select * from StudentResults
 select * from StudentRegistrations
+select * from StudentResults
 select * from ResultColumns  
+select * from ClassWeights
 
 delete from StudentResults where registration_id = '21521976_SE100.O11'
-
+delete from StudentResults
 drop table ResultColumn
 
 
@@ -326,6 +327,7 @@ alter table StudentResults alter column grade FLOAT
 insert into StudentResults values('R_21521999_SE100.O11', '21521999_SE100.O11', 5.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Attendance', 5.0, 0.5)
 insert into ResultColumns values ('R_21521999_SE100.O11', 'Final', 6.0, 0.5)
+insert into ClassWeights values ('CW_SE100.011', 'SE100.O11', 0.2, 0.3, 0.5)
 update ResultColumns set grade = 9.0 where column_name = 'Attendance'
 
 CREATE TRIGGER trg_AutoSetStudentResultGrade
@@ -346,18 +348,7 @@ BEGIN
     INNER JOIN inserted ON StudentResults.student_results_id = inserted.student_results_id;
 END;
 
-CREATE FUNCTION dbo.CheckTotalWeight(@student_results_id NVARCHAR(20))
-RETURNS FLOAT
-AS
-BEGIN
-    DECLARE @totalWeight FLOAT;
 
-    SELECT @totalWeight = SUM(weight)
-    FROM ResultColumns
-    WHERE student_results_id = @student_results_id;
-
-    RETURN @totalWeight;
-END;
 
 ALTER TABLE ResultColumns
 ADD CONSTRAINT CK_TotalWeight CHECK (dbo.CheckTotalWeight(student_results_id) <= 1);
@@ -372,6 +363,30 @@ BEGIN
 
     -- Insert into StudentResults for each inserted StudentRegistration
     INSERT INTO StudentResults (student_results_id, registration_id, grade)
-    SELECT 'R_' + CAST(inserted.registration_id AS NVARCHAR(20)), inserted.registration_id, NULL
+    SELECT 'R_' + CAST(inserted.registration_id AS NVARCHAR(30)), inserted.registration_id, NULL
     FROM inserted;
 END;
+
+drop trigger trg_CreateStudentResult
+
+CREATE TRIGGER trg_CreateClassWeight
+ON Classes
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Insert into ClassWeights for each inserted Class
+    INSERT INTO ClassWeights (classweight_id, class_id, attendance_weight, midterm_weight, final_weight)
+    SELECT 
+        'CW_' + CAST(inserted.class_id AS NVARCHAR(10)), -- Generate classweight_id
+        inserted.class_id, 
+        0.2 AS attendance_weight, 
+        0.3 AS midterm_weight, 
+        0.5 AS final_weight
+    FROM inserted;
+END;
+
+delete from profiles where profile_id = 9
+delete  from Teachers 
+delete from users where user_type = 'teacher'

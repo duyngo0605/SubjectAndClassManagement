@@ -31,7 +31,7 @@ namespace SubjectAndClassManagement.Controllers
             var students = _context.Students
                 .Where(s => s.Registrations.Any(r => r.class_id == classId))
                 .ToList();
-
+           
             ViewBag.ClassId = classId;
             return View(students);
         }
@@ -71,23 +71,35 @@ namespace SubjectAndClassManagement.Controllers
                 return NotFound();
             }
 
-            // Lấy danh sách sinh viên của lớp học
+            // Lấy danh sách sinh viên của lớp học cùng với điểm
             var students = await _context.StudentRegistrations
                 .Include(sr => sr.Student)
                 .Include(sr => sr.StudentResult)
-                .ThenInclude(sr => sr.ResultColumns)
+                    .ThenInclude(sr => sr.ResultColumns)
                 .Where(sr => sr.class_id == id)
                 .ToListAsync();
 
+            // Lấy trọng số từ ClassWeights
+            var classWeights = await _context.ClassWeights.FirstOrDefaultAsync(cw => cw.class_id == id);
+
+            // Chuyển đổi danh sách sinh viên thành danh sách DTO
+            var studentResults = students.Select(sr => new StudentResultDTO
+            {
+                Student = sr.Student,
+                AttendanceGrade = sr.StudentResult?.ResultColumns.FirstOrDefault(r => r.column_name == "Attendance")?.grade ?? 0,
+                MidtermGrade = sr.StudentResult?.ResultColumns.FirstOrDefault(r => r.column_name == "Midterm")?.grade ?? 0,
+                FinalGrade = sr.StudentResult?.ResultColumns.FirstOrDefault(r => r.column_name == "Final")?.grade ?? 0,
+            }).ToList();
+
+            // Tính điểm trung bình cho từng sinh viên
+            foreach (var studentResult in studentResults)
+            {
+                studentResult.AverageGrade = (studentResult.AttendanceGrade + studentResult.MidtermGrade + studentResult.FinalGrade) / 3;
+            }
+
             ViewData["ClassName"] = $"{sclass.Subject.subject_name} - {sclass.Teacher.teacher_name} - {sclass.class_id}";
 
-            // Lấy giá trị weight của các result column cần thiết và truyền vào TempData
-            TempData["AttendanceWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight ?? 0;
-            TempData["MidtermWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Midterm")?.weight ?? 0;
-            TempData["FinalWeight"] = students.FirstOrDefault()?.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight ?? 0;
-            @TempData["Grade"] = students.FirstOrDefault()?.StudentResult?.grade;
-
-            return View("EditResults", students);
+            return View("EditResults", new { StudentResults = studentResults, ClassWeights = classWeights }); // Truyền danh sách sinh viên và trọng số vào view
         }
 
         // POST: StuGrade/EditResults/5
@@ -140,7 +152,6 @@ namespace SubjectAndClassManagement.Controllers
 
                             // Update grade and weight for the ResultColumn
                             resultColumn.grade = Convert.ToDouble(columnValues["grade"]);
-                            resultColumn.weight = Convert.ToDouble(columnValues["weight"]);
                         }
                     }
                 }
@@ -161,7 +172,107 @@ namespace SubjectAndClassManagement.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateGrades(
+    string studentId,
+    double attendanceGrade,
+    double midtermGrade,
+    double finalGrade)
+        {
+            // Tìm StudentRegistration dựa trên studentId
+            var registration = await _context.StudentRegistrations
+                .Include(sr => sr.StudentResult)
+                    .ThenInclude(sr => sr.ResultColumns)
+                .FirstOrDefaultAsync(sr => sr.Student.student_id == studentId);
 
+            if (registration == null)
+            {
+                return NotFound("Student registration not found.");
+            }
+
+            // Đảm bảo StudentResult được khởi tạo
+            if (registration.StudentResult == null)
+            {
+                registration.StudentResult = new StudentResult
+                {
+                    student_results_id = "R_" + registration.registration_id,
+                    registration_id = registration.registration_id,
+                    ResultColumns = new List<ResultColumn>()
+                };
+                _context.StudentResults.Add(registration.StudentResult);
+            }
+
+            // Đảm bảo ResultColumns được khởi tạo
+            if (registration.StudentResult.ResultColumns == null)
+            {
+                registration.StudentResult.ResultColumns = new List<ResultColumn>();
+            }
+
+            // Cập nhật điểm cho các ResultColumns
+            UpdateOrAddColumn(registration.StudentResult, "Attendance", attendanceGrade);
+            UpdateOrAddColumn(registration.StudentResult, "Midterm", midtermGrade);
+            UpdateOrAddColumn(registration.StudentResult, "Final", finalGrade);
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _context.SaveChangesAsync();
+
+            // Chuyển hướng về trang EditResults
+            return RedirectToAction("EditResults", new { id = registration.class_id });
+        }
+
+
+        private void UpdateOrAddColumn(StudentResult studentResult, string columnName, double grade)
+        {
+            // Đảm bảo ResultColumns được khởi tạo (dự phòng)
+            if (studentResult.ResultColumns == null)
+            {
+                studentResult.ResultColumns = new List<ResultColumn>();
+            }
+
+            // Cập nhật hoặc thêm mới cột
+            var column = studentResult.ResultColumns.FirstOrDefault(rc => rc.column_name == columnName);
+            if (column != null)
+            {
+                column.grade = grade;
+            }
+            else
+            {
+                studentResult.ResultColumns.Add(new ResultColumn
+                {
+                    column_name = columnName,
+                    grade = grade,
+                });
+            }
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateWeights(string classId, double attendanceWeight, double midtermWeight, double finalWeight)
+        {
+
+            if (Math.Abs(attendanceWeight + midtermWeight + finalWeight - 1.0) > 0.01)
+            {
+                return BadRequest("The sum of weights must be equal to 1.");
+            }
+
+            var classWeights = await _context.ClassWeights.FirstOrDefaultAsync(cw => cw.class_id == classId);
+            if (classWeights == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật trọng số
+            classWeights.attendance_weight = attendanceWeight;
+            classWeights.midterm_weight = midtermWeight;
+            classWeights.final_weight = finalWeight;
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("EditResults", new { id = classId });
+        }
 
     }
 }

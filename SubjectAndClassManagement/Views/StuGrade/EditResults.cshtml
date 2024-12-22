@@ -1,195 +1,100 @@
-﻿@model IEnumerable<SubjectAndClassManagement.Models.StudentRegistration>
+﻿@model dynamic // Sử dụng dynamic để nhận cả StudentResults và ClassWeights
 
 @{
-    ViewData["Title"] = "Edit Student Results";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manage Results";
 }
 
-<h2>Edit Student Results - @ViewData["ClassName"]</h2>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["Success"]
-    </div>
-}
-
+<link rel="stylesheet" href="~/css/StyleSheet.css" />
 
 <div class="container">
-    <form asp-controller="StuGrade" asp-action="EditResults" method="post">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th style="width: 120px;">Attendance</th>
-                    <th hidden style="width: 80px;">Attendance Weight</th>
-                    <th style="width: 120px;">Mid-term</th>
-                    <th hidden style="width: 80px;">Mid-term Weight</th>
-                    <th style="width: 120px;">Final</th>
-                    <th hidden style="width: 80px;">Final Weight</th>
-                    <th style="width: 120px;">Average</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th>
-                        <input type="number" class="form-control attendance-weight" id="Attendance-Weight"
-                               oninput="updateInputs('attendance', this.value)" placeholder="0" min="0" max="1" step="0.1"
-                               value="@TempData["AttendanceWeight"]">
-                    </th>
-                    <th>
-                        <input type="number" class="form-control midterm-weight" id="Mid-term-Weight"
-                               oninput="updateInputs('midterm', this.value)" placeholder="0" min="0" max="1" step="0.1"
-                               value="@TempData["MidtermWeight"]">
-                    </th>
-                    <th>
-                        <input type="number" class="form-control final-weight" id="Final-Weight"
-                               oninput="updateInputs('final', this.value)" placeholder="0" min="0.5" max="1" step="0.1"
-                               value="@TempData["FinalWeight"]">
-                    </th>
-                    <th></th>
-                </tr>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var student in Model)
-                {
-                    <tr>
-                        <td>@student.Student.student_id</td>
-                        <td>@student.Student.student_name</td>
-                        <td>
-                            <input type="number" class="form-control" name="grades[@student.registration_id][Attendance].grade" placeholder="0" min="0" max="10"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.grade" />
-                        </td>
-                        <td hidden>
-                            <input type="number" class="form-control attendance-weight" name="grades[@student.registration_id][Attendance].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Attendance")?.weight" />
-                        </td>
-                        <td>
-                            <input type="number" class="form-control" name="grades[@student.registration_id][Midterm].grade" placeholder="0" min="0" max="10"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Midterm")?.grade" />
-                        </td>
-                        <td hidden>
-                            <input type="number" class="form-control midterm-weight" name="grades[@student.registration_id][Midterm].weight" placeholder="0" step="0.1" min="0.1" max="0.5"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Midterm")?.weight" />
-                        </td>
-                        <td>
-                        <input type="number" class="form-control" name="grades[@student.registration_id][Final].grade" placeholder="0" min="0" max="10"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.grade" />
-                        </td>
-                        <td hidden>
-                            <input type="number" class="form-control final-weight" name="grades[@student.registration_id][Final].weight" placeholder="0" step="0.1" min="0.5" max="1.0"
-                                    value="@student.StudentResult?.ResultColumns.FirstOrDefault(rc => rc.column_name == "Final")?.weight" />
-                        </td>
-                        <td id="average">
-                            @TempData["Grade"]
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <h2>@ViewData["ClassName"] - Manage Results</h2>
 
-        <div class="mt-3">
-            <input class="submit" type="submit" value="Save Changes" class="btn btn-primary"/>
+    <!-- Form để cập nhật trọng số -->
+    <form method="post" action="@Url.Action("UpdateWeights", "StuGrade")">
+        <input type="hidden" name="classId" value="@Model.ClassWeights.class_id" />
+        <div class="form-group">
+            <label>Attendance Weight</label>
+            <input type="text" class="form-control" name="attendanceWeight" value="@Model.ClassWeights.attendance_weight" />
         </div>
+        <div class="form-group">
+            <label>Midterm Weight</label>
+            <input type="text" class="form-control" name="midtermWeight" value="@Model.ClassWeights.midterm_weight" />
+        </div>
+        <div class="form-group">
+            <label>Final Weight</label>
+            <input type="text" class="form-control" name="finalWeight" value="@Model.ClassWeights.final_weight" />
+        </div>
+        <button type="submit" class="btn btn-primary">Update Weights</button>
     </form>
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Attendance</th>
+                <th>Midterm</th>
+                <th>Final</th>
+                <th>Average Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var studentResult in Model.StudentResults)
+            {
+                <tr>
+                    <td>@studentResult.Student.student_name</td>
+                    <td>@studentResult.Student.email</td>
+                    <td>@studentResult.Student.phone_number</td>
+                    <td>@studentResult.AttendanceGrade</td>
+                    <td>@studentResult.MidtermGrade</td>
+                    <td>@studentResult.FinalGrade</td>
+                    <td>@studentResult.AverageGrade</td>
+                    <td>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal-@studentResult.Student.student_id">Edit</button>
+                    </td>
+                </tr>
+
+                <!-- Modal for editing grades -->
+                <div class="modal fade" id="editModal-@studentResult.Student.student_id" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form method="post" asp-action="UpdateGrades">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Edit Grades for @studentResult.Student.student_name</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="studentId" value="@studentResult.Student.student_id" />
+
+                                    <div class="form-group">
+                                        <label>Attendance Grade</label>
+                                        <input type="text" class="form-control" name="attendanceGrade" value="@studentResult.AttendanceGrade" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Midterm Grade</label>
+                                        <input type="text" class="form-control" name="midtermGrade" value="@studentResult.MidtermGrade" />
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label>Final Grade</label>
+                                        <input type="text" class="form-control" name="finalGrade" value="@studentResult.FinalGrade" />
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    </table>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        {
-            $('.form-control').change(function () {
-                {
-                    updateAverage();
-                }
-            });
-
-            $('form').submit(function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                // Perform your custom validation here
-                if (!validateForm()) {
-                    return;
-                }
-
-                // If validation passes, submit the form
-                this.submit();
-            });
-        }
-    });
-
-    function validateForm() {
-        var isValid = true;
-
-        $('tbody tr').each(function () {
-            var attendanceGrade = parseFloat($(this).find('[name$="[Attendance].grade"]').val()) || 0;
-            var attendanceWeight = parseFloat($(this).find('[name$="[Attendance].weight"]').val()) || 0;
-
-            var midtermGrade = parseFloat($(this).find('[name$="[Midterm].grade"]').val()) || 0;
-            var midtermWeight = parseFloat($(this).find('[name$="[Midterm].weight"]').val()) || 0;
-
-            var finalGrade = parseFloat($(this).find('[name$="[Final].grade"]').val()) || 0;
-            var finalWeight = parseFloat($(this).find('[name$="[Final].weight"]').val()) || 0;
-
-            var totalWeight = attendanceWeight + midtermWeight + finalWeight;
-
-            // Check if total weight is equal to 1
-            if (totalWeight !== 1) {
-                alert('Total weight must be equal to 1.');
-                isValid = false;
-                return false; // Break out of the loop
-            }
-
-            // Check if grades are within the valid range (0 to 10)
-            if (attendanceGrade < 0 || attendanceGrade > 10 ||
-                midtermGrade < 0 || midtermGrade > 10 ||
-                finalGrade < 0 || finalGrade > 10) {
-                alert('Grades must be between 0 and 10.');
-                isValid = false;
-                return false; // Break out of the loop
-            }
-        });
-
-        return isValid;
-    }
-
-    function updateInputs(type, value) {
-        // Lấy danh sách tất cả các input có class tương ứng với loại (attendance, midterm, final)
-        var inputs = document.querySelectorAll('.' + type + '-weight');
-
-        // Lặp qua từng input để cập nhật giá trị
-        inputs.forEach(function (input) {
-            input.value = value;
-        });
-    }
-
-    function updateAverage() {
-        $('tbody tr').each(function () {
-            var attendanceGrade = parseFloat($(this).find('[name$="[Attendance].grade"]').val()) || 0;
-            var attendanceWeight = parseFloat($(this).find('[name$="[Attendance].weight"]').val()) || 0;
-
-            var midtermGrade = parseFloat($(this).find('[name$="[Midterm].grade"]').val()) || 0;
-            var midtermWeight = parseFloat($(this).find('[name$="[Midterm].weight"]').val()) || 0;
-
-            var finalGrade = parseFloat($(this).find('[name$="[Final].grade"]').val()) || 0;
-            var finalWeight = parseFloat($(this).find('[name$="[Final].weight"]').val()) || 0;
-
-
-            var totalWeight = attendanceWeight + midtermWeight + finalWeight;
-
-            // Kiểm tra tổng trọng số có quá 1 hay không
-            if (totalWeight > 1) {
-                alert('Total weight must not be larger than 1');
-                return; // Không cập nhật nếu tổng trọng số vượt quá 1
-            }
-
-            var average = (attendanceGrade * attendanceWeight + midtermGrade * midtermWeight + finalGrade * finalWeight);
-
-            // Cập nhật giá trị trung bình vào ô "Average"
-            $(this).find('#average').text(average.toFixed(2));
-
-        });
-    }
-
-</script>

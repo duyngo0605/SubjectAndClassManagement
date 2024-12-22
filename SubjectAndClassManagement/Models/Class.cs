@@ -8,7 +8,7 @@ namespace SubjectAndClassManagement.Models
     public class Class
     {
         [Key]
-        [StringLength(10)]
+        [StringLength(30)]
         [Display(Name = "Class ID")]
         public string class_id { get; set; }
 

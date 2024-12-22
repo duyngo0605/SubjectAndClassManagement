@@ -15,7 +15,7 @@ namespace SubjectAndClassManagement.Models
         public string student_id { get; set; }
 
         [Required]
-        [StringLength(10)]
+        [StringLength(30)]
         [Display(Name = "Class ID")]
         public string class_id { get; set; }
 
