@@ -44,7 +44,13 @@
 										<h6 class="mb-0">Building name</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input asp-for="building_name" class="form-control" />
+										<select asp-for="building_name" class="form-control">
+											<option value="A">Tòa A</option>
+											<option value="B">Tòa B</option>
+											<option value="C">Tòa C</option>
+											<option value="D">Tòa D</option>
+											<option value="E">Tòa E</option>
+										</select>
 									</div>
 									<span asp-validation-for="building_name" class="text-danger"></span>
 								</div>

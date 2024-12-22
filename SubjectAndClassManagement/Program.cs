@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option => {
         option.LoginPath = "/Accounts/Login";
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(120);
     });
 
 builder.Services.AddSession();
@@ -30,9 +30,6 @@ else
 
 builder.Services.AddDbContext<SchoolContext>(options =>
     options.UseSqlServer(connection));
-
-
-
 
 var app = builder.Build();
 
@@ -60,3 +57,4 @@ app.MapControllerRoute(
     pattern: "{controller=Accounts}/{action=Login}/{id?}");
 
 app.Run();
+

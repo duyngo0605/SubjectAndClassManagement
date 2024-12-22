@@ -5,6 +5,7 @@ using SubjectAndClassManagement.Models;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SubjectAndClassManagement.Controllers
 {
@@ -21,15 +22,16 @@ namespace SubjectAndClassManagement.Controllers
         // GET: Schedule
         public async Task<IActionResult> Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var isStudent = User.IsInRole("student");
             var isTeacher = User.IsInRole("teacher");
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            IEnumerable<Class> classes;
 
             if (isStudent)
             {
-                var registeredClasses = await _context.StudentRegistrations
+                classes = await _context.StudentRegistrations
                     .Where(sr => sr.student_id == userId && sr.status == "Registered")
-                    .Include(sr => sr.Class) // Include Class
+                    .Include(sr => sr.Class)
                         .ThenInclude(c => c.Subject)
                     .Include(sr => sr.Class)
                         .ThenInclude(c => c.Room)
@@ -37,24 +39,33 @@ namespace SubjectAndClassManagement.Controllers
                         .ThenInclude(c => c.Teacher)
                     .Select(sr => sr.Class)
                     .ToListAsync();
-
-                return View("Index", registeredClasses);
             }
             else if (isTeacher)
             {
-                var teachingClasses = await _context.Classes
+                classes = await _context.Classes
                     .Where(c => c.teacher_id == userId)
                     .Include(c => c.Subject)
                     .Include(c => c.Room)
                     .Include(c => c.Teacher)
                     .ToListAsync();
-
-                return View("Index", teachingClasses);
             }
             else
             {
                 return Unauthorized();
             }
+
+            var semesters = classes.Select(c => c.semester).Distinct().OrderByDescending(s => s);
+            var academicYears = classes.Select(c => c.academic_year).Distinct().OrderByDescending(y => y);
+            var latestSem = semesters.FirstOrDefault();
+            var latestYear = academicYears.FirstOrDefault();
+
+            // ViewBag with latest semester
+            ViewBag.Semesters = new SelectList(semesters, selectedValue: latestSem);
+            ViewBag.AcademicYears = new SelectList(academicYears, selectedValue: latestYear);
+            ViewBag.SelectedSemester = latestSem;
+            ViewBag.SelectedAcademicYear = latestYear;
+
+            return View(classes);
         }
     }
 }

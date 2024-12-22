@@ -25,6 +25,8 @@ public class SchoolContext : DbContext
     public DbSet<StudentResult> StudentResults { get; set; }
     public DbSet<ResultColumn> ResultColumns { get; set; }
 
+    public DbSet<ClassWeights> ClassWeights { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Class>()
@@ -198,7 +200,14 @@ public class SchoolContext : DbContext
             .WithMany(s => s.ResultColumns)
             .HasForeignKey(u => u.student_results_id)
             .IsRequired(false);
+        modelBuilder.Entity<ClassWeights>()
+               .HasKey(cw => cw.classweight_id); // Đặt khóa chính
 
+        modelBuilder.Entity<ClassWeights>()
+            .HasOne(cw => cw.Class)
+            .WithMany() // Nếu có quan hệ một-nhiều
+            .HasForeignKey(cw => cw.class_id)
+            .IsRequired(false);// Khóa ngoại đến bảng Classes
     }
 
 }

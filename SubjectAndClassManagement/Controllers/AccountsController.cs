@@ -117,7 +117,7 @@ namespace SubjectAndClassManagement.Controllers
         {
             var user = _context.Users.FirstOrDefault(u => u.username == model.Username);
 
-            if (user.username != model.Username || user == null)
+            if (user == null || user.username != model.Username)
             {
                 // Account does not exist
                 message = "Account does not exist.";

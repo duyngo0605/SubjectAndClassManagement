@@ -7,6 +7,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using SubjectAndClassManagement.Models;
 
 namespace SubjectAndClassManagement.Controllers
@@ -212,53 +213,73 @@ namespace SubjectAndClassManagement.Controllers
                 }
             }
         }
-
-        // Action for import from Excel
+        // Adjusted ImportFromExcel method for TeachersController
         [HttpPost]
-        public IActionResult ImportFromExcel(IFormFile file)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportFromExcel(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
-                ModelState.AddModelError("File", "The file was not uploaded.");
-                return View("Index"); // Return to the Index view if there's an error
+                TempData["ErrorMessage"] = "Please select a valid Excel file.";
+                return RedirectToAction(nameof(Index));
             }
+
+            var teachers = new List<Teacher>();
 
             using (var stream = new MemoryStream())
             {
-                file.CopyTo(stream);
-                using (var workbook = new XLWorkbook(stream))
+                await file.CopyToAsync(stream);
+                using (var package = new ExcelPackage(stream))
                 {
-                    var worksheet = workbook.Worksheets.First();
-                    var rowCount = worksheet.RowCount();
-
-                    for (int row = 2; row <= rowCount; row++)
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (worksheet == null)
                     {
-                        var teacherId = worksheet.Cell(row, 1).Value.ToString().Trim();
-                        var existingTeacher = _context.Teachers.Find(teacherId);
+                        TempData["ErrorMessage"] = "The Excel file is empty or invalid.";
+                        return RedirectToAction(nameof(Index));
+                    }
 
-                        if (existingTeacher == null)
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++) // Skip the first row (header)
+                    {
+                        var teacherId = worksheet.Cells[row, 1].Value?.ToString()?.Trim();
+                        var teacherName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        var email = worksheet.Cells[row, 3].Value?.ToString()?.Trim();
+                        var phoneNumber = worksheet.Cells[row, 4].Value?.ToString()?.Trim();
+
+                        if (!string.IsNullOrEmpty(teacherId) && !string.IsNullOrEmpty(teacherName))
                         {
-                            // Teacher does not exist, add a new one
-                            var newTeacher = new Teacher
+                            var teacher = new Teacher
                             {
                                 teacher_id = teacherId,
-                                teacher_name = worksheet.Cell(row, 2).Value.ToString().Trim(),
-                                email = worksheet.Cell(row, 3).Value.ToString().Trim(),
-                                phone_number = worksheet.Cell(row, 4).Value.ToString().Trim()
+                                teacher_name = teacherName,
+                                email = email,
+                                phone_number = phoneNumber
                             };
-                            _context.Teachers.Add(newTeacher);
-                        }
-                        else
-                        {
-                            // Teacher already exists, update the existing one
-                            existingTeacher.teacher_name = worksheet.Cell(row, 2).Value.ToString().Trim();
-                            existingTeacher.email = worksheet.Cell(row, 3).Value.ToString().Trim();
-                            existingTeacher.phone_number = worksheet.Cell(row, 4).Value.ToString().Trim();
-                            // No need to set the state to Modified; EF tracks changes automatically
+
+                            teachers.Add(teacher);
                         }
                     }
-                    _context.SaveChanges();
                 }
+            }
+
+            if (teachers.Any())
+            {
+                // Avoid duplicates
+                foreach (var teacher in teachers)
+                {
+                    if (!_context.Teachers.Any(t => t.teacher_id == teacher.teacher_id))
+                    {
+                        _context.Teachers.Add(teacher);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Teachers imported successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No valid data found in the Excel file.";
             }
 
             return RedirectToAction(nameof(Index));
